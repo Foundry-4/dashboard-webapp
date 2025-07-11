@@ -1,9 +1,9 @@
-import { Button } from '@/components/ui/button'
+import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useState } from 'react'
-import { Link, type MetaFunction } from 'react-router'
+import { type MetaFunction } from 'react-router'
 
 export const meta: MetaFunction = () => [
   { title: 'Redefinir senha - NaMesaJá' }
@@ -40,24 +40,14 @@ export default function ForgotPassword() {
           </div>
         )}
 
-        {!emailSent && (
-          <Button
-            className="h-10 w-full outline-none"
-            onClick={handleSendEmail}
-          >
-            Redefinir senha
-          </Button>
-        )}
-
-        <p className="text-center text-sm text-gray-500">
-          Já possui conta?
-          <Link
-            to="/login"
-            className="ml-1 text-sm"
-          >
-            Acessar conta
-          </Link>
-        </p>
+        <AuthFooter
+          question="Já possui conta?"
+          linkText="Acessar conta"
+          linkTo="/login"
+          isButtonDisabled={emailSent}
+          buttonText="Redefinir senha"
+          onSubmit={handleSendEmail}
+        />
       </CardContent>
     </>
   )

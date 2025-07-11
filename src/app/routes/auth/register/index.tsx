@@ -1,8 +1,8 @@
-import { Button } from '@/components/ui/button'
+import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Link, type MetaFunction, useNavigate } from 'react-router'
+import { type MetaFunction, useNavigate } from 'react-router'
 
 export const meta: MetaFunction = () => [{ title: 'Criar conta - NaMesaJá' }]
 
@@ -45,22 +45,13 @@ export default function Register() {
           />
         </div>
 
-        <Button
-          className="h-10 w-full outline-none"
-          onClick={handleRegister}
-        >
-          Criar conta
-        </Button>
-
-        <p className="text-center text-sm text-gray-500">
-          Já possui conta?
-          <Link
-            to="/login"
-            className="ml-1 text-sm"
-          >
-            Acessar conta
-          </Link>
-        </p>
+        <AuthFooter
+          question="Já possui conta?"
+          linkText="Acessar conta"
+          linkTo="/login"
+          buttonText="Criar conta"
+          onSubmit={handleRegister}
+        />
       </CardContent>
     </>
   )

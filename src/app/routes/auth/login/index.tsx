@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -36,27 +36,18 @@ export default function Login() {
 
         <Link
           to="/forgot-password"
-          className="ml-auto text-sm"
+          className="ml-auto text-sm !text-orange-600"
         >
           Esqueci minha senha
         </Link>
 
-        <Button
-          className="h-10 w-full outline-none"
-          onClick={handleLogin}
-        >
-          Entrar
-        </Button>
-
-        <p className="text-center text-sm text-gray-500">
-          Não possui conta?
-          <Link
-            to="/register"
-            className="ml-1 text-sm"
-          >
-            Criar conta
-          </Link>
-        </p>
+        <AuthFooter
+          question="Não possui conta?"
+          linkText="Criar conta"
+          linkTo="/register"
+          buttonText="Entrar"
+          onSubmit={handleLogin}
+        />
       </CardContent>
     </>
   )
