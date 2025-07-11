@@ -9,6 +9,7 @@ interface AuthFooterProps {
   isButtonDisabled?: boolean
   buttonText: string
   onSubmit?: () => void
+  disabled?: boolean
 }
 
 export const AuthFooter = ({
@@ -18,18 +19,18 @@ export const AuthFooter = ({
   className,
   isButtonDisabled,
   onSubmit,
-  buttonText
+  buttonText,
+  disabled
 }: AuthFooterProps) => (
   <div className="flex flex-col gap-4">
-    {!isButtonDisabled && (
-      <Button
-        className="focus-visible:foutline-none h-10 w-full !bg-orange-600 outline-none hover:!border-orange-700 focus:!outline-none"
-        onClick={onSubmit}
-        disabled={isButtonDisabled}
-      >
-        {buttonText}
-      </Button>
-    )}
+    <Button
+      type="submit"
+      className="focus-visible:foutline-none h-10 w-full !bg-orange-600 outline-none hover:!border-orange-700 focus:!outline-none"
+      onClick={onSubmit}
+      disabled={disabled || isButtonDisabled}
+    >
+      {buttonText}
+    </Button>
 
     <p className={`text-center text-sm text-gray-500 ${className ?? ''}`}>
       {question}

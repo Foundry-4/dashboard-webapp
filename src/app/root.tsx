@@ -1,3 +1,4 @@
+import { AuthProvider } from '@/contexts/AuthContext'
 import type { ReactNode } from 'react'
 import { Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
@@ -26,7 +27,7 @@ export function Layout({ children }: LayoutProps) {
         <Meta />
       </head>
       <body>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
 
         <ScrollRestoration />
         <Scripts />
