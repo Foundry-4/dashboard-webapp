@@ -12,15 +12,15 @@ import {
   InputOTPSlot
 } from '@/components/ui/input-otp'
 import { useAuth } from '@/contexts/AuthContext'
+import { verify2FASchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import type { MetaFunction } from 'react-router'
 import { z } from 'zod'
 
-const verify2FASchema = z.object({
-  otp: z.string().length(6, 'Código deve ter 6 dígitos')
-})
-
 type Verify2FAFormData = z.infer<typeof verify2FASchema>
+
+export const meta: MetaFunction = () => [{ title: 'Verificar 2FA - NaMesaJá' }]
 
 export default function Verify2FA() {
   const { verify2FA } = useAuth()

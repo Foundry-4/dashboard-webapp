@@ -23,6 +23,10 @@ export const registerSchema = z
     path: ['confirmEmail']
   })
 
+export const verify2FASchema = z.object({
+  otp: z.string().length(6, 'Código deve ter 6 dígitos')
+})
+
 export const forgotPasswordSchema = z.object({
   email: z.string().email('Email inválido')
 })
