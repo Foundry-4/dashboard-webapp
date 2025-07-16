@@ -2,6 +2,7 @@ import { AuthMutations } from '@/services/queries/auth'
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type Dispatch,
   type ReactNode,
@@ -50,10 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const user = localStorage.getItem('na-mesa-ja:user')
     return user ? JSON.parse(user) : null
   })
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return !!localStorage.getItem('na-mesa-ja:accessToken')
-  })
+  const isAuthenticated = !!user?.token
 
   const createUser = AuthMutations.useCreateUser()
   const loginUser = AuthMutations.useLogin()
@@ -76,10 +74,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   const logout = () => {
-    localStorage.removeItem('na-mesa-ja:accessToken')
-    localStorage.removeItem('na-mesa-ja:user')
-    setIsAuthenticated(false)
     setUser(null)
+    localStorage.removeItem('na-mesa-ja:user')
   }
 
   const register = async ({
@@ -107,8 +103,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     setUser(userData)
-    setIsAuthenticated(true)
-    localStorage.setItem('na-mesa-ja:accessToken', response.data?.token ?? '')
     localStorage.setItem('na-mesa-ja:user', JSON.stringify(userData))
 
     return response
@@ -143,6 +137,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       confirmPassword
     })
   }
+
+  // Listen for localStorage changes from other tabs/windows
+  // This automatically syncs the user state when localStorage is modified externally
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'na-mesa-ja:user') {
+        if (event.newValue === null) {
+          setUser(null)
+        } else if (event.newValue) {
+          try {
+            const userData = JSON.parse(event.newValue)
+            setUser(userData)
+          } catch (error) {
+            console.error('Failed to parse user data from localStorage:', error)
+            setUser(null)
+          }
+        }
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
 
   const value: AuthContextType = {
     user,
