@@ -1,15 +1,17 @@
-import { CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { AuthFooter } from '@/components/auth/AuthFooter'
+import { CardHeader, CardTitle } from '@/components/ui/card'
 import { AuthMutations } from '@/services/queries/auth'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
-import { AuthFooter } from '../../../../components/auth/AuthFooter'
 
 export default function ConfirmAccount() {
   const [searchParams] = useSearchParams()
   const userGuid = searchParams.get('user-guid')
-  const confirmAccount = AuthMutations.useConfirmAccount()
-  const [message, setMessage] = useState('')
+
   const hasConfirmed = useRef(false)
+  const [message, setMessage] = useState('')
+
+  const confirmAccount = AuthMutations.useConfirmAccount()
 
   const handleConfirmAccount = useCallback(
     async (userGuid: string) => {
@@ -18,11 +20,10 @@ export default function ConfirmAccount() {
 
       try {
         const response = await confirmAccount.mutateAsync({ userGuid })
+
         setMessage(response.message)
       } catch (error) {
-        setMessage(
-          error instanceof Error ? error.message : 'Erro ao confirmar conta.'
-        )
+        setMessage('Você já confirmou sua conta.')
       }
     },
     [confirmAccount]
@@ -40,15 +41,14 @@ export default function ConfirmAccount() {
         Confirmação de conta
       </CardTitle>
 
-      <CardDescription className="text-center text-sm text-gray-500">
-        {message}
-      </CardDescription>
-
-      <AuthFooter
-        question="Conta confirmada?"
-        linkTo="/login"
-        linkText="Faça login para continuar"
-      />
+      {message && (
+        <AuthFooter
+          question={message}
+          linkTo="/login"
+          linkText="Faça login para continuar"
+          hideSubmitButton
+        />
+      )}
     </CardHeader>
   )
 }

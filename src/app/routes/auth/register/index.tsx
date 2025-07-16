@@ -36,12 +36,12 @@ export default function Register() {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      const response = await registerUser(
-        data.name,
-        data.email,
-        data.confirmEmail,
-        data.password
-      )
+      const response = await registerUser({
+        name: data.name,
+        email: data.email,
+        confirmEmail: data.confirmEmail,
+        password: data.password
+      })
 
       if (!response.status) {
         setMessage('')
@@ -68,8 +68,8 @@ export default function Register() {
 
       <CardContent className="flex flex-col gap-6">
         <form
-          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
+          onSubmit={handleSubmit(onSubmit)}
         >
           <FormInput
             label="Nome *"

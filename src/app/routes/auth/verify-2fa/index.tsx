@@ -41,7 +41,7 @@ export default function Verify2FA() {
 
   const onSubmit = async (data: Verify2FAFormData) => {
     try {
-      const response = await verify2FA(data.otp)
+      const response = await verify2FA({ twoFactorCode: data.otp })
 
       if (!response.status) {
         return setError('root', {

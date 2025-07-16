@@ -32,7 +32,10 @@ export default function Login() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      const response = await login(data.email, data.password)
+      const response = await login({
+        email: data.email,
+        password: data.password
+      })
 
       if (!response.status) {
         return setError('root', {
@@ -62,8 +65,8 @@ export default function Login() {
 
       <CardContent className="flex flex-col gap-6">
         <form
-          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
+          onSubmit={handleSubmit(onSubmit)}
         >
           <FormInput
             label="Email"

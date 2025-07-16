@@ -40,7 +40,7 @@ export default function ForgotPassword() {
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      const response = await forgotPassword(data.email)
+      const response = await forgotPassword({ email: data.email })
       if (!response.status) {
         setMessage('')
         setError('root', {

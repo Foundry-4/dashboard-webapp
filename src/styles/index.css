@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -182,5 +182,59 @@ button:focus-visible {
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Override browser autofill styles */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+    -webkit-text-fill-color: currentColor !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+  }
+
+  /* Firefox autofill override */
+  input:-moz-autofill {
+    background-color: transparent !important;
+    color: currentColor !important;
+  }
+
+  /* Additional autofill text color fixes */
+  input:-webkit-autofill {
+    color: var(--foreground) !important;
+    -webkit-text-fill-color: var(--foreground) !important;
+  }
+
+  /* Autofill hover state - prevent color changes */
+  input:-webkit-autofill:hover {
+    color: var(--foreground) !important;
+    -webkit-text-fill-color: var(--foreground) !important;
+  }
+
+  /* Autofill focus state - prevent color changes */
+  input:-webkit-autofill:focus {
+    color: var(--foreground) !important;
+    -webkit-text-fill-color: var(--foreground) !important;
+  }
+
+  /* Dark mode autofill */
+  .dark input:-webkit-autofill {
+    color: var(--foreground) !important;
+    -webkit-text-fill-color: var(--foreground) !important;
+  }
+
+  /* Dark mode autofill hover state */
+  .dark input:-webkit-autofill:hover {
+    color: var(--foreground) !important;
+    -webkit-text-fill-color: var(--foreground) !important;
+  }
+
+  /* Dark mode autofill focus state */
+  .dark input:-webkit-autofill:focus {
+    color: var(--foreground) !important;
+    -webkit-text-fill-color: var(--foreground) !important;
   }
 }

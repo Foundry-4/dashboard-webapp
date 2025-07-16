@@ -35,12 +35,12 @@ export default function ChangePassword() {
 
   const onSubmit = async (data: ChangePasswordFormData) => {
     try {
-      const response = await changePassword(
-        user?.userGuid ?? '',
-        data.currentPassword,
-        data.newPassword,
-        data.confirmPassword
-      )
+      const response = await changePassword({
+        userGuid: user?.userGuid ?? '',
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+        confirmPassword: data.confirmPassword
+      })
 
       if (!response.status) {
         setMessage('')

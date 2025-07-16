@@ -38,11 +38,11 @@ export default function ResetPassword() {
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     try {
-      const response = await resetPassword(
-        userGuid ?? '',
-        data.newPassword,
-        data.confirmPassword
-      )
+      const response = await resetPassword({
+        userGuid: userGuid ?? '',
+        newPassword: data.newPassword,
+        confirmPassword: data.confirmPassword
+      })
 
       if (!response.status) {
         setMessage('')

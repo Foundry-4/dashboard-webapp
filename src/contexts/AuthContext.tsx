@@ -2,13 +2,20 @@ import { AuthMutations } from '@/services/queries/auth'
 import {
   createContext,
   useContext,
-  useEffect,
   useState,
   type Dispatch,
   type ReactNode,
   type SetStateAction
 } from 'react'
-import type { AuthResponse } from '../domain/interfaces/auth'
+import type {
+  AuthResponse,
+  ChangePasswordProps,
+  ForgotPasswordProps,
+  LoginProps,
+  RegisterProps,
+  ResetPasswordProps,
+  Verify2FAProps
+} from '../domain/interfaces/auth'
 
 interface User {
   userId: string
@@ -21,29 +28,14 @@ interface User {
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
-  isLoading: boolean
   setUser: Dispatch<SetStateAction<User | null>>
-  login: (email: string, password: string) => Promise<AuthResponse>
+  login: (props: LoginProps) => Promise<AuthResponse>
   logout: () => void
-  register: (
-    name: string,
-    email: string,
-    confirmEmail: string,
-    password: string
-  ) => Promise<AuthResponse>
-  forgotPassword: (email: string) => Promise<AuthResponse>
-  resetPassword: (
-    userGuid: string,
-    newPassword: string,
-    confirmPassword: string
-  ) => Promise<AuthResponse>
-  verify2FA: (otp: string) => Promise<AuthResponse>
-  changePassword: (
-    userGuid: string,
-    currentPassword: string,
-    newPassword: string,
-    confirmPassword: string
-  ) => Promise<AuthResponse>
+  register: (props: RegisterProps) => Promise<AuthResponse>
+  forgotPassword: (props: ForgotPasswordProps) => Promise<AuthResponse>
+  resetPassword: (props: ResetPasswordProps) => Promise<AuthResponse>
+  verify2FA: (props: Verify2FAProps) => Promise<AuthResponse>
+  changePassword: (props: ChangePasswordProps) => Promise<AuthResponse>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -53,8 +45,15 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null)
-  const isAuthenticated = !!user?.token
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window === 'undefined') return null
+    const user = localStorage.getItem('na-mesa-ja:user')
+    return user ? JSON.parse(user) : null
+  })
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return !!localStorage.getItem('na-mesa-ja:accessToken')
+  })
 
   const createUser = AuthMutations.useCreateUser()
   const loginUser = AuthMutations.useLogin()
@@ -63,24 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const resetPasswordMutation = AuthMutations.useResetPassword()
   const changePasswordMutation = AuthMutations.useChangePassword()
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const storedUser = localStorage.getItem('user')
-        if (storedUser) {
-          setUser(JSON.parse(storedUser))
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error)
-        localStorage.removeItem('auth_token')
-        localStorage.removeItem('user')
-      }
-    }
-
-    checkAuth()
-  }, [])
-
-  const login = async (email: string, password: string) => {
+  const login = async ({ email, password }: LoginProps) => {
     const response = await loginUser.mutateAsync({ email, password })
 
     if (!response.status) {
@@ -88,35 +70,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     setUser(response.data)
-    localStorage.setItem('user', JSON.stringify(response.data))
+    localStorage.setItem('na-mesa-ja:user', JSON.stringify(response.data))
+
     return response
   }
 
   const logout = () => {
-    localStorage.removeItem('user')
+    localStorage.removeItem('na-mesa-ja:accessToken')
+    localStorage.removeItem('na-mesa-ja:user')
+    setIsAuthenticated(false)
     setUser(null)
   }
 
-  const register = async (
-    name: string,
-    email: string,
-    confirmEmail: string,
-    password: string
-  ) => {
-    const response = await createUser.mutateAsync({
-      name,
-      email,
-      confirmEmail,
-      password
-    })
-
-    return response
+  const register = async ({
+    name,
+    email,
+    confirmEmail,
+    password
+  }: RegisterProps) => {
+    return await createUser.mutateAsync({ name, email, confirmEmail, password })
   }
 
-  const verify2FA = async (otp: string) => {
+  const verify2FA = async ({ twoFactorCode }: Verify2FAProps) => {
     const response = await verify2FAMutation.mutateAsync({
       userGuid: user?.userGuid ?? '',
-      twoFactorCode: otp
+      twoFactorCode
     })
 
     if (!response.status) {
@@ -129,56 +107,46 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     setUser(userData)
-    localStorage.setItem('user', JSON.stringify(userData))
+    setIsAuthenticated(true)
+    localStorage.setItem('na-mesa-ja:accessToken', response.data?.token ?? '')
+    localStorage.setItem('na-mesa-ja:user', JSON.stringify(userData))
+
     return response
   }
 
-  const forgotPassword = async (email: string) => {
-    const response = await forgotPasswordMutation.mutateAsync({ email })
-    return response
+  const forgotPassword = async ({ email }: ForgotPasswordProps) => {
+    return await forgotPasswordMutation.mutateAsync({ email })
   }
 
-  const resetPassword = async (
-    userGuid: string,
-    newPassword: string,
-    confirmPassword: string
-  ) => {
-    try {
-      const response = await resetPasswordMutation.mutateAsync({
-        userGuid,
-        newPassword,
-        confirmPassword
-      })
-
-      return response
-    } catch (error) {
-      console.error('Reset password failed:', error)
-      throw new Error('Falha ao redefinir senha.')
-    }
+  const resetPassword = async ({
+    userGuid,
+    newPassword,
+    confirmPassword
+  }: ResetPasswordProps) => {
+    return await resetPasswordMutation.mutateAsync({
+      userGuid,
+      newPassword,
+      confirmPassword
+    })
   }
 
-  const changePassword = async (
-    userGuid: string,
-    currentPassword: string,
-    newPassword: string,
-    confirmPassword: string
-  ) => {
-    const response = await changePasswordMutation.mutateAsync({
+  const changePassword = async ({
+    userGuid,
+    currentPassword,
+    newPassword,
+    confirmPassword
+  }: ChangePasswordProps) => {
+    return await changePasswordMutation.mutateAsync({
       userGuid,
       currentPassword,
       newPassword,
       confirmPassword
     })
-
-    return response
   }
-
-  const isLoading = false
 
   const value: AuthContextType = {
     user,
     isAuthenticated,
-    isLoading,
     setUser,
     login,
     logout,
