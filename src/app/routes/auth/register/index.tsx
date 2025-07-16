@@ -1,31 +1,15 @@
 import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
+import { FormInput } from '@/components/ui/custom/FormInput'
+import { MessageAlert } from '@/components/ui/custom/MessageAlert'
 import { useAuth } from '@/contexts/AuthContext'
+import { registerSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { type MetaFunction } from 'react-router'
 import { z } from 'zod'
-
-const registerSchema = z
-  .object({
-    name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
-    email: z.string().email('Email inválido'),
-    confirmEmail: z.string().email('Email inválido'),
-    password: z
-      .string()
-      .min(6, 'Senha deve ter pelo menos 6 caracteres')
-      .regex(/[A-Z]/, 'Senha deve conter pelo menos uma letra maiúscula')
-      .regex(/[a-z]/, 'Senha deve conter pelo menos uma letra minúscula')
-      .regex(/[0-9]/, 'Senha deve conter pelo menos um número')
-      .regex(/[!@#$%^&*]/, 'Senha deve conter pelo menos um caractere especial')
-  })
-  .refine(data => data.email === data.confirmEmail, {
-    message: 'Emails não coincidem',
-    path: ['confirmEmail']
-  })
 
 type RegisterFormData = z.infer<typeof registerSchema>
 
@@ -87,76 +71,36 @@ export default function Register() {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
-          <div className="flex flex-col gap-2">
-            <Label className="text-sm text-gray-500">Nome *</Label>
-            <Input
-              type="text"
-              {...register('name')}
-              className="h-10 outline-none focus-visible:ring-0"
-              disabled={isSubmitting}
-            />
-            {errors.name && (
-              <span className="text-sm text-red-600">
-                {errors.name.message}
-              </span>
-            )}
-          </div>
+          <FormInput
+            label="Nome *"
+            type="text"
+            error={errors.name?.message}
+            {...register('name')}
+          />
 
-          <div className="flex flex-col gap-2">
-            <Label className="text-sm text-gray-500">Email *</Label>
-            <Input
-              type="email"
-              {...register('email')}
-              className="h-10 outline-none focus-visible:ring-0"
-              disabled={isSubmitting}
-            />
-            {errors.email && (
-              <span className="text-sm text-red-600">
-                {errors.email.message}
-              </span>
-            )}
-          </div>
+          <FormInput
+            label="Email *"
+            type="email"
+            error={errors.email?.message}
+            {...register('email')}
+          />
 
-          <div className="flex flex-col gap-2">
-            <Label className="text-sm text-gray-500">Confirmar email *</Label>
-            <Input
-              type="email"
-              {...register('confirmEmail')}
-              className="h-10 outline-none focus-visible:ring-0"
-              disabled={isSubmitting}
-            />
-            {errors.confirmEmail && (
-              <span className="text-sm text-red-600">
-                {errors.confirmEmail.message}
-              </span>
-            )}
-          </div>
+          <FormInput
+            label="Confirmar email *"
+            type="email"
+            error={errors.confirmEmail?.message}
+            {...register('confirmEmail')}
+          />
 
-          <div className="flex flex-col gap-2">
-            <Label className="text-sm text-gray-500">Senha *</Label>
-            <Input
-              type="password"
-              {...register('password')}
-              className="h-10 outline-none focus-visible:ring-0"
-              disabled={isSubmitting}
-            />
-            {errors.password && (
-              <span className="text-sm text-red-600">
-                {errors.password.message}
-              </span>
-            )}
-          </div>
+          <FormInput
+            label="Senha *"
+            type="password"
+            error={errors.password?.message}
+            {...register('password')}
+          />
 
-          {errors.root && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {errors.root.message}
-            </div>
-          )}
-          {message && (
-            <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
-              {message}
-            </div>
-          )}
+          <ErrorAlert error={errors.root?.message} />
+          <MessageAlert message={message} />
 
           <AuthFooter
             question="Já possui conta?"

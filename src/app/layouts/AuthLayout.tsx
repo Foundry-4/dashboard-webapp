@@ -1,14 +1,14 @@
 import { Card } from '@/components/ui/card'
-import { PublicRoute } from '@/middlewares/auth/public'
 import { ShieldCheck } from 'lucide-react'
 import { Outlet } from 'react-router'
 import { cn } from '../../lib/utils'
+import { AuthGuard } from '../../middlewares/auth/authGuard'
 
 export default function AuthLayout() {
   const isSmallHeightScreen = window.innerHeight < 600
 
   return (
-    <PublicRoute>
+    <AuthGuard isPrivate={false}>
       <div
         className={cn(
           'flex h-screen w-screen items-center justify-center bg-slate-300',
@@ -52,6 +52,6 @@ export default function AuthLayout() {
           </div>
         </article>
       </div>
-    </PublicRoute>
+    </AuthGuard>
   )
 }

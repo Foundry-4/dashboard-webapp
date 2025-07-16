@@ -7,7 +7,7 @@ interface AuthFooterProps {
   linkTo: string
   className?: string
   isButtonDisabled?: boolean
-  buttonText: string
+  buttonText?: string
   onSubmit?: () => void
   disabled?: boolean
 }
@@ -23,14 +23,16 @@ export const AuthFooter = ({
   disabled
 }: AuthFooterProps) => (
   <div className="flex flex-col gap-4">
-    <Button
-      type="submit"
-      className="focus-visible:foutline-none h-10 w-full !bg-orange-600 outline-none hover:!border-orange-700 focus:!outline-none"
-      onClick={onSubmit}
-      disabled={disabled || isButtonDisabled}
-    >
-      {buttonText}
-    </Button>
+    {onSubmit && (
+      <Button
+        type="submit"
+        className="focus-visible:foutline-none h-10 w-full !bg-orange-600 outline-none hover:!border-orange-700 focus:!outline-none"
+        onClick={onSubmit}
+        disabled={disabled || isButtonDisabled}
+      >
+        {buttonText}
+      </Button>
+    )}
 
     <p className={`text-center text-sm text-gray-500 ${className ?? ''}`}>
       {question}

@@ -1,18 +1,21 @@
 import { CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { AuthMutations } from '@/services/queries/auth'
-import { useCallback, useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router'
+import { AuthFooter } from '../../../../components/auth/AuthFooter'
 
 export default function ConfirmAccount() {
-  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const [hasConfirmed, setHasConfirmed] = useState(false)
   const userGuid = searchParams.get('user-guid')
   const confirmAccount = AuthMutations.useConfirmAccount()
   const [message, setMessage] = useState('')
+  const hasConfirmed = useRef(false)
 
   const handleConfirmAccount = useCallback(
     async (userGuid: string) => {
+      if (hasConfirmed.current) return
+      hasConfirmed.current = true
+
       try {
         const response = await confirmAccount.mutateAsync({ userGuid })
         setMessage(response.message)
@@ -22,15 +25,14 @@ export default function ConfirmAccount() {
         )
       }
     },
-    [confirmAccount, navigate]
+    [confirmAccount]
   )
 
   useEffect(() => {
-    if (userGuid && !hasConfirmed) {
-      setHasConfirmed(true)
+    if (userGuid && !hasConfirmed.current) {
       handleConfirmAccount(userGuid)
     }
-  }, [userGuid, confirmAccount, hasConfirmed, handleConfirmAccount])
+  }, [userGuid, handleConfirmAccount])
 
   return (
     <CardHeader className="flex flex-col items-center gap-4">
@@ -41,6 +43,12 @@ export default function ConfirmAccount() {
       <CardDescription className="text-center text-sm text-gray-500">
         {message}
       </CardDescription>
+
+      <AuthFooter
+        question="Conta confirmada?"
+        linkTo="/login"
+        linkText="Faça login para continuar"
+      />
     </CardHeader>
   )
 }

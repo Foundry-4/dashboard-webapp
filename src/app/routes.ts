@@ -1,13 +1,11 @@
 import { type RouteConfig, layout, route } from '@react-router/dev/routes'
 
 export default [
-  // Protected routes
   layout('./layouts/DashboardLayout.tsx', [
     route('/', './routes/dashboard/index.tsx'),
     route('/change-password', './routes/auth/change-password/index.tsx')
   ]),
 
-  // Public routes (auth pages)
   layout('./layouts/AuthLayout.tsx', [
     route('/login', './routes/auth/login/index.tsx'),
     route('/register', './routes/auth/register/index.tsx'),

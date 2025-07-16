@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
 import {
   InputOTP,
   InputOTPGroup,
@@ -96,11 +97,7 @@ export default function Verify2FA() {
             )}
           </div>
 
-          {errors.root && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {errors.root.message}
-            </div>
-          )}
+          <ErrorAlert error={errors.root?.message} />
 
           <AuthFooter
             question="Não recebeu o código?"

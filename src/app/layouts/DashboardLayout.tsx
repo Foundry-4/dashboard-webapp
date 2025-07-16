@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
-import { PrivateRoute } from '@/middlewares/auth/private'
 import { LogOut, User } from 'lucide-react'
 import { Outlet, useNavigate } from 'react-router'
+import { AuthGuard } from '../../middlewares/auth/authGuard'
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth()
@@ -14,7 +14,7 @@ export default function DashboardLayout() {
   }
 
   return (
-    <PrivateRoute>
+    <AuthGuard isPrivate={true}>
       <div className="flex h-screen bg-gray-50">
         {/* Sidebar */}
         <div className="w-64 bg-white shadow-lg">
@@ -68,6 +68,6 @@ export default function DashboardLayout() {
           </main>
         </div>
       </div>
-    </PrivateRoute>
+    </AuthGuard>
   )
 }

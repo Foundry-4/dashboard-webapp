@@ -5,18 +5,16 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
+import { FormInput } from '@/components/ui/custom/FormInput'
+import { MessageAlert } from '@/components/ui/custom/MessageAlert'
 import { useAuth } from '@/contexts/AuthContext'
+import { forgotPasswordSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { type MetaFunction } from 'react-router'
 import { z } from 'zod'
-
-const forgotPasswordSchema = z.object({
-  email: z.string().email('Email inválido')
-})
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>
 
@@ -83,32 +81,15 @@ export default function ForgotPassword() {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
-          <div className="flex flex-col gap-2">
-            <Label className="text-sm text-gray-500">Email</Label>
-            <Input
-              type="email"
-              {...register('email')}
-              className="h-10 outline-none focus-visible:ring-0"
-              disabled={isSubmitting}
-            />
-            {errors.email && (
-              <span className="text-sm text-red-600">
-                {errors.email.message}
-              </span>
-            )}
-          </div>
+          <FormInput
+            label="Email *"
+            type="email"
+            error={errors.email?.message}
+            {...register('email')}
+          />
 
-          {errors.root && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {errors.root.message}
-            </div>
-          )}
-
-          {message && (
-            <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
-              {message}
-            </div>
-          )}
+          <ErrorAlert error={errors.root?.message} />
+          <MessageAlert message={message} />
 
           <AuthFooter
             question="Lembrou sua senha?"

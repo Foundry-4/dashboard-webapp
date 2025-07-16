@@ -1,29 +1,15 @@
 import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
+import { FormInput } from '@/components/ui/custom/FormInput'
+import { MessageAlert } from '@/components/ui/custom/MessageAlert'
 import { useAuth } from '@/contexts/AuthContext'
+import { resetPasswordSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { type MetaFunction, useSearchParams } from 'react-router'
 import { z } from 'zod'
-
-const resetPasswordSchema = z
-  .object({
-    newPassword: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
-    confirmPassword: z
-      .string()
-      .min(6, 'A senha deve ter pelo menos 6 caracteres')
-      .regex(/[A-Z]/, 'Senha deve conter pelo menos uma letra maiúscula')
-      .regex(/[a-z]/, 'Senha deve conter pelo menos uma letra minúscula')
-      .regex(/[0-9]/, 'Senha deve conter pelo menos um número')
-      .regex(/[!@#$%^&*]/, 'Senha deve conter pelo menos um caractere especial')
-  })
-  .refine(data => data.newPassword === data.confirmPassword, {
-    message: 'As senhas não coincidem',
-    path: ['confirmPassword']
-  })
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
 
@@ -88,49 +74,22 @@ export default function ResetPassword() {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
-          <div className="flex flex-col gap-2">
-            <Label className="text-sm text-gray-500">Nova senha</Label>
-            <Input
-              type="password"
-              {...register('newPassword')}
-              className="h-10 outline-none focus-visible:ring-0"
-              disabled={isSubmitting}
-            />
-            {errors.newPassword && (
-              <span className="text-sm text-red-600">
-                {errors.newPassword.message}
-              </span>
-            )}
-          </div>
+          <FormInput
+            label="Nova senha *"
+            type="password"
+            error={errors.newPassword?.message}
+            {...register('newPassword')}
+          />
 
-          <div className="flex flex-col gap-2">
-            <Label className="text-sm text-gray-500">
-              Confirmar nova senha
-            </Label>
-            <Input
-              type="password"
-              {...register('confirmPassword')}
-              className="h-10 outline-none focus-visible:ring-0"
-              disabled={isSubmitting}
-            />
-            {errors.confirmPassword && (
-              <span className="text-sm text-red-600">
-                {errors.confirmPassword.message}
-              </span>
-            )}
-          </div>
+          <FormInput
+            label="Confirmar nova senha *"
+            type="password"
+            error={errors.confirmPassword?.message}
+            {...register('confirmPassword')}
+          />
 
-          {errors.root && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {errors.root.message}
-            </div>
-          )}
-
-          {message && (
-            <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
-              {message}
-            </div>
-          )}
+          <ErrorAlert error={errors.root?.message} />
+          <MessageAlert message={message} />
 
           <AuthFooter
             question="Lembrou sua senha?"
