@@ -11,6 +11,8 @@ export default [
     route('/login', './routes/auth/login/index.tsx'),
     route('/register', './routes/auth/register/index.tsx'),
     route('/forgot-password', './routes/auth/forgot-password/index.tsx'),
-    route('/reset-password', './routes/auth/reset-password/index.tsx')
+    route('/reset-password', './routes/auth/reset-password/index.tsx'),
+    route('/confirm-account', './routes/auth/confirm-account/index.tsx'),
+    route('/verify-2fa', './routes/auth/verify-2fa/index.tsx')
   ])
 ] satisfies RouteConfig

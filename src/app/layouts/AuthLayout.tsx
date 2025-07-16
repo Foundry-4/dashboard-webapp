@@ -1,5 +1,5 @@
-import { PublicRoute } from '@/components/auth/PublicRoute'
 import { Card } from '@/components/ui/card'
+import { PublicRoute } from '@/middlewares/auth/public'
 import { ShieldCheck } from 'lucide-react'
 import { Outlet } from 'react-router'
 import { cn } from '../../lib/utils'

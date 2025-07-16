@@ -1,27 +1,39 @@
+import { AuthMutations } from '@/services/queries/auth'
 import {
   createContext,
   useContext,
   useEffect,
   useState,
-  type ReactNode
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction
 } from 'react'
+import type { AuthResponse } from '../domain/interfaces/auth'
 
 interface User {
-  id: string
-  email: string
+  userId: string
   name: string
-  role: string
+  email: string
+  userGuid: string
+  token?: string
 }
 
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (email: string, password: string) => Promise<void>
+  setUser: Dispatch<SetStateAction<User | null>>
+  login: (email: string, password: string) => Promise<AuthResponse>
   logout: () => void
-  register: (name: string, email: string, password: string) => Promise<void>
+  register: (
+    name: string,
+    email: string,
+    confirmEmail: string,
+    password: string
+  ) => Promise<AuthResponse>
   forgotPassword: (email: string) => Promise<void>
   resetPassword: (token: string, password: string) => Promise<void>
+  verify2FA: (otp: string) => Promise<AuthResponse>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -32,29 +44,24 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const isAuthenticated = !!user?.token
 
-  const isAuthenticated = !!user
+  const createUser = AuthMutations.useCreateUser()
+  const loginUser = AuthMutations.useLogin()
+  const forgotPasswordMutation = AuthMutations.useForgotPassword()
+  const verify2FAMutation = AuthMutations.useVerify2FA()
 
-  // Check for existing session on mount
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('auth_token')
-        if (token) {
-          // TODO: Validate token with API
-          // For now, we'll simulate a user session
-          const storedUser = localStorage.getItem('user')
-          if (storedUser) {
-            setUser(JSON.parse(storedUser))
-          }
+        const storedUser = localStorage.getItem('user')
+        if (storedUser) {
+          setUser(JSON.parse(storedUser))
         }
       } catch (error) {
         console.error('Auth check failed:', error)
         localStorage.removeItem('auth_token')
         localStorage.removeItem('user')
-      } finally {
-        setIsLoading(false)
       }
     }
 
@@ -62,116 +69,84 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [])
 
   const login = async (email: string, password: string) => {
-    try {
-      setIsLoading(true)
+    const response = await loginUser.mutateAsync({ email, password })
 
-      // TODO: Replace with actual API call
-      // const response = await api.post('/auth/login', { email, password })
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // Simulate successful login
-      const mockUser: User = {
-        id: '1',
-        email,
-        name: 'Usuário Teste',
-        role: 'user'
-      }
-
-      const mockToken = 'mock-jwt-token'
-
-      localStorage.setItem('auth_token', mockToken)
-      localStorage.setItem('user', JSON.stringify(mockUser))
-      setUser(mockUser)
-    } catch (error) {
-      console.error('Login failed:', error)
-      throw new Error('Falha na autenticação. Verifique suas credenciais.')
-    } finally {
-      setIsLoading(false)
+    if (!response.status) {
+      return response
     }
+
+    setUser(response.data)
+    localStorage.setItem('user', JSON.stringify(response.data))
+    return response
   }
 
   const logout = () => {
-    localStorage.removeItem('auth_token')
     localStorage.removeItem('user')
     setUser(null)
   }
 
-  const register = async (name: string, email: string, password: string) => {
-    try {
-      setIsLoading(true)
+  const register = async (
+    name: string,
+    email: string,
+    confirmEmail: string,
+    password: string
+  ) => {
+    const response = await createUser.mutateAsync({
+      name,
+      email,
+      confirmEmail,
+      password
+    })
 
-      // TODO: Replace with actual API call
-      // const response = await api.post('/auth/register', { name, email, password })
+    return response
+  }
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+  const verify2FA = async (otp: string) => {
+    const response = await verify2FAMutation.mutateAsync({
+      userGuid: user?.userGuid ?? '',
+      twoFactorCode: otp
+    })
 
-      // Simulate successful registration
-      const mockUser: User = {
-        id: '1',
-        email,
-        name,
-        role: 'user'
-      }
-
-      const mockToken = 'mock-jwt-token'
-
-      localStorage.setItem('auth_token', mockToken)
-      localStorage.setItem('user', JSON.stringify(mockUser))
-      setUser(mockUser)
-    } catch (error) {
-      console.error('Registration failed:', error)
-      throw new Error('Falha no cadastro. Tente novamente.')
-    } finally {
-      setIsLoading(false)
+    if (!response.status) {
+      return response
     }
+
+    const userData = {
+      ...user,
+      ...response.data
+    }
+
+    setUser(userData)
+    localStorage.setItem('user', JSON.stringify(userData))
+    return response
   }
 
   const forgotPassword = async (email: string) => {
-    try {
-      setIsLoading(true)
-
-      // TODO: Replace with actual API call
-      // await api.post('/auth/forgot-password', { email })
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-    } catch (error) {
-      console.error('Forgot password failed:', error)
-      throw new Error('Falha ao enviar email de recuperação.')
-    } finally {
-      setIsLoading(false)
-    }
+    await forgotPasswordMutation.mutateAsync({ email })
   }
 
   const resetPassword = async (token: string, password: string) => {
     try {
-      setIsLoading(true)
-
-      // TODO: Replace with actual API call
-      // await api.post('/auth/reset-password', { token, password })
-
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
     } catch (error) {
       console.error('Reset password failed:', error)
       throw new Error('Falha ao redefinir senha.')
-    } finally {
-      setIsLoading(false)
     }
   }
+
+  const isLoading = false
 
   const value: AuthContextType = {
     user,
     isAuthenticated,
     isLoading,
+    setUser,
     login,
     logout,
     register,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    verify2FA
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

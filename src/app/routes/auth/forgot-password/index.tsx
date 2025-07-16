@@ -8,42 +8,51 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/contexts/AuthContext'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { type MetaFunction } from 'react-router'
+import { z } from 'zod'
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email('Email inválido')
+})
+
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>
 
 export const meta: MetaFunction = () => [
   { title: 'Esqueci minha senha - NaMesaJá' }
 ]
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   const { forgotPassword } = useAuth()
+  const [success, setSuccess] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!email) {
-      setError('Por favor, insira seu email.')
-      return
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: ''
     }
+  })
 
+  const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      setIsSubmitting(true)
-      setError('')
-      await forgotPassword(email)
+      await forgotPassword(data.email)
       setSuccess(true)
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Erro ao enviar email de recuperação.'
-      )
-    } finally {
-      setIsSubmitting(false)
+      console.error('Forgot password error:', err)
+      setError('root', {
+        type: 'manual',
+        message:
+          err instanceof Error
+            ? err.message
+            : 'Erro ao enviar email de recuperação.'
+      })
     }
   }
 
@@ -84,12 +93,12 @@ export default function ForgotPassword() {
 
       <CardContent className="flex flex-col gap-6">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
-          {error && (
+          {errors.root && (
             <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {error}
+              {errors.root.message}
             </div>
           )}
 
@@ -97,11 +106,15 @@ export default function ForgotPassword() {
             <Label className="text-sm text-gray-500">Email</Label>
             <Input
               type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              {...register('email')}
               className="h-10 outline-none focus-visible:ring-0"
               disabled={isSubmitting}
             />
+            {errors.email && (
+              <span className="text-sm text-red-600">
+                {errors.email.message}
+              </span>
+            )}
           </div>
 
           <AuthFooter

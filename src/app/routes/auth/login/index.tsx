@@ -3,40 +3,58 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/contexts/AuthContext'
-import { useState } from 'react'
-import { type MetaFunction, Link, useLocation, useNavigate } from 'react-router'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { type MetaFunction, Link, useNavigate } from 'react-router'
+import { z } from 'zod'
+
+const loginSchema = z.object({
+  email: z.string().email('Email inválido'),
+  password: z.string().min(1, 'Senha é obrigatória')
+})
+
+type LoginFormData = z.infer<typeof loginSchema>
 
 export const meta: MetaFunction = () => [{ title: 'Login - NaMesaJá' }]
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   const { login } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
 
-  const from = location.state?.from?.pathname || '/'
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!email || !password) {
-      setError('Por favor, preencha todos os campos.')
-      return
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: ''
     }
+  })
 
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      setIsSubmitting(true)
-      setError('')
-      await login(email, password)
-      navigate(from, { replace: true })
+      const response = await login(data.email, data.password)
+
+      if (!response.status) {
+        return setError('root', {
+          type: 'manual',
+          message: response.message
+        })
+      }
+
+      if (!response.data.token) {
+        return navigate('/verify-2fa')
+      }
+
+      return navigate('/')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao fazer login.')
-    } finally {
-      setIsSubmitting(false)
+      setError('root', {
+        type: 'manual',
+        message: err instanceof Error ? err.message : 'Erro ao fazer login.'
+      })
     }
   }
 
@@ -48,36 +66,44 @@ export default function Login() {
 
       <CardContent className="flex flex-col gap-6">
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
-          {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {error}
-            </div>
-          )}
-
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-gray-500">Email</Label>
             <Input
               type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              {...register('email')}
               className="h-10 outline-none focus-visible:ring-0"
               disabled={isSubmitting}
             />
+            {errors.email && (
+              <span className="text-sm text-red-600">
+                {errors.email.message}
+              </span>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-gray-500">Senha</Label>
             <Input
               type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              {...register('password')}
               className="h-10 outline-none focus-visible:ring-0"
               disabled={isSubmitting}
             />
+            {errors.password && (
+              <span className="text-sm text-red-600">
+                {errors.password.message}
+              </span>
+            )}
           </div>
+
+          {errors.root && (
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+              {errors.root.message}
+            </div>
+          )}
 
           <Link
             to="/forgot-password"

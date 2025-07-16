@@ -3,43 +3,76 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/contexts/AuthContext'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { type MetaFunction, useNavigate } from 'react-router'
+import { useForm } from 'react-hook-form'
+import { type MetaFunction } from 'react-router'
+import { z } from 'zod'
+
+const registerSchema = z
+  .object({
+    name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
+    email: z.string().email('Email inválido'),
+    confirmEmail: z.string().email('Email inválido'),
+    password: z
+      .string()
+      .min(6, 'Senha deve ter pelo menos 6 caracteres')
+      .regex(/[A-Z]/, 'Senha deve conter pelo menos uma letra maiúscula')
+      .regex(/[a-z]/, 'Senha deve conter pelo menos uma letra minúscula')
+      .regex(/[0-9]/, 'Senha deve conter pelo menos um número')
+      .regex(/[!@#$%^&*]/, 'Senha deve conter pelo menos um caractere especial')
+  })
+  .refine(data => data.email === data.confirmEmail, {
+    message: 'Emails não coincidem',
+    path: ['confirmEmail']
+  })
+
+type RegisterFormData = z.infer<typeof registerSchema>
 
 export const meta: MetaFunction = () => [{ title: 'Criar conta - NaMesaJá' }]
 
 export default function Register() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { register: registerUser } = useAuth()
+  const [message, setMessage] = useState('')
 
-  const { register } = useAuth()
-  const navigate = useNavigate()
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!name || !email || !password) {
-      setError('Por favor, preencha todos os campos.')
-      return
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      confirmEmail: '',
+      password: ''
     }
+  })
 
-    if (password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres.')
-      return
-    }
-
+  const onSubmit = async (data: RegisterFormData) => {
     try {
-      setIsSubmitting(true)
-      setError('')
-      await register(name, email, password)
-      navigate('/')
+      const response = await registerUser(
+        data.name,
+        data.email,
+        data.confirmEmail,
+        data.password
+      )
+
+      if (!response.status) {
+        setMessage('')
+        return setError('root', {
+          type: 'manual',
+          message: response.message
+        })
+      }
+      setMessage(response.message)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao criar conta.')
-    } finally {
-      setIsSubmitting(false)
+      console.error('Registration error:', err)
+      setError('root', {
+        type: 'manual',
+        message: err instanceof Error ? err.message : 'Erro ao criar conta.'
+      })
     }
   }
 
@@ -51,47 +84,79 @@ export default function Register() {
 
       <CardContent className="flex flex-col gap-6">
         <form
-          onSubmit={handleRegister}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
-          {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {error}
-            </div>
-          )}
-
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-gray-500">Nome</Label>
             <Input
               type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
+              {...register('name')}
               className="h-10 outline-none focus-visible:ring-0"
               disabled={isSubmitting}
             />
+            {errors.name && (
+              <span className="text-sm text-red-600">
+                {errors.name.message}
+              </span>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-gray-500">Email</Label>
             <Input
               type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              {...register('email')}
               className="h-10 outline-none focus-visible:ring-0"
               disabled={isSubmitting}
             />
+            {errors.email && (
+              <span className="text-sm text-red-600">
+                {errors.email.message}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label className="text-sm text-gray-500">Confirmar email</Label>
+            <Input
+              type="email"
+              {...register('confirmEmail')}
+              className="h-10 outline-none focus-visible:ring-0"
+              disabled={isSubmitting}
+            />
+            {errors.confirmEmail && (
+              <span className="text-sm text-red-600">
+                {errors.confirmEmail.message}
+              </span>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-gray-500">Senha</Label>
             <Input
               type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              {...register('password')}
               className="h-10 outline-none focus-visible:ring-0"
               disabled={isSubmitting}
             />
+            {errors.password && (
+              <span className="text-sm text-red-600">
+                {errors.password.message}
+              </span>
+            )}
           </div>
+
+          {errors.root && (
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+              {errors.root.message}
+            </div>
+          )}
+          {message && (
+            <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
+              {message}
+            </div>
+          )}
 
           <AuthFooter
             question="Já possui conta?"

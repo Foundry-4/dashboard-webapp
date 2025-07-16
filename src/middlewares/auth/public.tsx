@@ -1,15 +1,13 @@
 import { useAuth } from '@/contexts/AuthContext'
-import { Navigate, useLocation } from 'react-router'
+import { Navigate } from 'react-router'
 
-interface ProtectedRouteProps {
+interface PublicRouteProps {
   children: React.ReactNode
   fallback?: React.ReactNode
 }
 
-export const ProtectedRoute = ({ children, fallback }: ProtectedRouteProps) => {
+export const PublicRoute = ({ children, fallback }: PublicRouteProps) => {
   const { isAuthenticated, isLoading } = useAuth()
-  const location = useLocation()
-  console.log({ isAuthenticated, isLoading })
 
   if (isLoading) {
     return (
@@ -17,18 +15,17 @@ export const ProtectedRoute = ({ children, fallback }: ProtectedRouteProps) => {
         <div className="flex h-screen w-screen items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-600 border-t-transparent"></div>
-            <p className="text-sm text-gray-600">Carregando...</p>
+            <p className="text-sm text-gray-600">Carregando publica...</p>
           </div>
         </div>
       )
     )
   }
 
-  if (!isAuthenticated) {
+  if (isAuthenticated) {
     return (
       <Navigate
-        to="/login"
-        state={{ from: location }}
+        to="/"
         replace
       />
     )
