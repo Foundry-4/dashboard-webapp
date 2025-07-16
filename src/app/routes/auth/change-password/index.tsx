@@ -4,42 +4,40 @@ import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
 import { FormInput } from '@/components/ui/custom/FormInput'
 import { MessageAlert } from '@/components/ui/custom/MessageAlert'
 import { useAuth } from '@/contexts/AuthContext'
-import { resetPasswordSchema } from '@/domain/schemas/auth'
+import { changePasswordSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { type MetaFunction, useSearchParams } from 'react-router'
+import { type MetaFunction } from 'react-router'
 import { z } from 'zod'
 
-type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
+type ChangePasswordFormData = z.infer<typeof changePasswordSchema>
 
-export const meta: MetaFunction = () => [
-  { title: 'Redefinir senha - NaMesaJá' }
-]
+export const meta: MetaFunction = () => [{ title: 'Alterar senha - NaMesaJá' }]
 
-export default function ResetPassword() {
-  const { resetPassword } = useAuth()
+export default function ChangePassword() {
+  const { user, changePassword } = useAuth()
   const [message, setMessage] = useState('')
-  const [searchParams] = useSearchParams()
-  const userGuid = searchParams.get('user-guid')
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setError
-  } = useForm<ResetPasswordFormData>({
-    resolver: zodResolver(resetPasswordSchema),
+  } = useForm<ChangePasswordFormData>({
+    resolver: zodResolver(changePasswordSchema),
     defaultValues: {
+      currentPassword: '',
       newPassword: '',
       confirmPassword: ''
     }
   })
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
+  const onSubmit = async (data: ChangePasswordFormData) => {
     try {
-      const response = await resetPassword({
-        userGuid: userGuid ?? '',
+      const response = await changePassword({
+        userGuid: user?.userGuid ?? '',
+        currentPassword: data.currentPassword,
         newPassword: data.newPassword,
         confirmPassword: data.confirmPassword
       })
@@ -55,18 +53,18 @@ export default function ResetPassword() {
 
       setMessage(response.message)
     } catch (err) {
-      console.error('Reset password error:', err)
+      console.error('Change password error:', err)
       setError('root', {
         type: 'manual',
-        message: err instanceof Error ? err.message : 'Erro ao redefinir senha.'
+        message: err instanceof Error ? err.message : 'Erro ao alterar senha.'
       })
     }
   }
 
   return (
-    <>
+    <div className="w-full">
       <CardHeader>
-        <CardTitle className="text-center text-4xl">Redefinir senha</CardTitle>
+        <CardTitle className="text-center text-4xl">Alterar senha</CardTitle>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-6">
@@ -75,31 +73,39 @@ export default function ResetPassword() {
           className="flex flex-col gap-6"
         >
           <FormInput
-            label="Nova senha *"
+            label="Senha atual *"
+            type="password"
+            error={errors.currentPassword?.message}
+            {...register('currentPassword')}
+          />
+
+          <FormInput
+            label="Nova senha"
             type="password"
             error={errors.newPassword?.message}
             {...register('newPassword')}
           />
 
           <FormInput
-            label="Confirmar nova senha *"
+            label="Confirmar nova senha"
             type="password"
             error={errors.confirmPassword?.message}
             {...register('confirmPassword')}
           />
 
           <ErrorAlert error={errors.root?.message} />
+
           <MessageAlert message={message} />
 
           <AuthFooter
-            question="Lembrou sua senha?"
-            linkText="Fazer login"
-            linkTo="/login"
-            buttonText={isSubmitting ? 'Redefinindo...' : 'Redefinir senha'}
+            question="Não lembra sua senha atual?"
+            linkText="Solicitar nova senha"
+            linkTo="/forgot-password"
+            buttonText={isSubmitting ? 'Alterando...' : 'Alterar senha'}
             disabled={isSubmitting}
           />
         </form>
       </CardContent>
-    </>
+    </div>
   )
 }

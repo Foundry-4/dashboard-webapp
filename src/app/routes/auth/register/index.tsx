@@ -1,17 +1,63 @@
 import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { type MetaFunction, useNavigate } from 'react-router'
+import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
+import { FormInput } from '@/components/ui/custom/FormInput'
+import { MessageAlert } from '@/components/ui/custom/MessageAlert'
+import { useAuth } from '@/contexts/AuthContext'
+import { registerSchema } from '@/domain/schemas/auth'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { type MetaFunction } from 'react-router'
+import { z } from 'zod'
+
+type RegisterFormData = z.infer<typeof registerSchema>
 
 export const meta: MetaFunction = () => [{ title: 'Criar conta - NaMesaJá' }]
 
 export default function Register() {
-  const navigate = useNavigate()
+  const { register: registerUser } = useAuth()
+  const [message, setMessage] = useState('')
 
-  const handleRegister = () => {
-    // TODO: Logic with api here
-    navigate('/login')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      confirmEmail: '',
+      password: ''
+    }
+  })
+
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      const response = await registerUser({
+        name: data.name,
+        email: data.email,
+        confirmEmail: data.confirmEmail,
+        password: data.password
+      })
+
+      if (!response.status) {
+        setMessage('')
+        return setError('root', {
+          type: 'manual',
+          message: response.message
+        })
+      }
+      setMessage(response.message)
+    } catch (err) {
+      console.error('Registration error:', err)
+      setError('root', {
+        type: 'manual',
+        message: err instanceof Error ? err.message : 'Erro ao criar conta.'
+      })
+    }
   }
 
   return (
@@ -21,37 +67,49 @@ export default function Register() {
       </CardHeader>
 
       <CardContent className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <Label className="text-sm text-gray-500">Nome</Label>
-          <Input
+        <form
+          className="flex flex-col gap-6"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <FormInput
+            label="Nome *"
             type="text"
-            className="h-10 outline-none focus-visible:ring-0"
+            error={errors.name?.message}
+            {...register('name')}
           />
-        </div>
 
-        <div className="flex flex-col gap-2">
-          <Label className="text-sm text-gray-500">Email</Label>
-          <Input
+          <FormInput
+            label="Email *"
             type="email"
-            className="h-10 outline-none focus-visible:ring-0"
+            error={errors.email?.message}
+            {...register('email')}
           />
-        </div>
 
-        <div className="flex flex-col gap-2">
-          <Label className="text-sm text-gray-500">Senha</Label>
-          <Input
+          <FormInput
+            label="Confirmar email *"
+            type="email"
+            error={errors.confirmEmail?.message}
+            {...register('confirmEmail')}
+          />
+
+          <FormInput
+            label="Senha *"
             type="password"
-            className="h-10 outline-none focus-visible:ring-0"
+            error={errors.password?.message}
+            {...register('password')}
           />
-        </div>
 
-        <AuthFooter
-          question="Já possui conta?"
-          linkText="Acessar conta"
-          linkTo="/login"
-          buttonText="Criar conta"
-          onSubmit={handleRegister}
-        />
+          <ErrorAlert error={errors.root?.message} />
+          <MessageAlert message={message} />
+
+          <AuthFooter
+            question="Já possui conta?"
+            linkText="Acessar conta"
+            linkTo="/login"
+            buttonText={isSubmitting ? 'Criando conta...' : 'Criar conta'}
+            disabled={isSubmitting}
+          />
+        </form>
       </CardContent>
     </>
   )

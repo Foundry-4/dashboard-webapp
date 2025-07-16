@@ -4,15 +4,5 @@ export default {
   theme: {
     extend: {}
   },
-  plugins: [
-    function ({ addUtilities }) {
-      addUtilities({
-        '@media (min-height: 600px)': {
-          '.min-h600\\:h-screen': {
-            height: '100vh'
-          }
-        }
-      })
-    }
-  ]
+  plugins: []
 }

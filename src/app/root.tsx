@@ -1,5 +1,7 @@
-import type { ReactNode } from 'react'
 import { Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
+import { Providers } from './providers'
+
+import type { ReactNode } from 'react'
 
 import '@/styles/index.css'
 
@@ -26,7 +28,7 @@ export function Layout({ children }: LayoutProps) {
         <Meta />
       </head>
       <body>
-        {children}
+        <Providers>{children}</Providers>
 
         <ScrollRestoration />
         <Scripts />

@@ -1,14 +1,60 @@
 import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { type MetaFunction, Link } from 'react-router'
+import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
+import { FormInput } from '@/components/ui/custom/FormInput'
+import { useAuth } from '@/contexts/AuthContext'
+import { loginSchema } from '@/domain/schemas/auth'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { type MetaFunction, Link, useNavigate } from 'react-router'
+import { z } from 'zod'
+
+type LoginFormData = z.infer<typeof loginSchema>
 
 export const meta: MetaFunction = () => [{ title: 'Login - NaMesaJá' }]
 
 export default function Login() {
-  const handleLogin = () => {
-    // TODO: Logic with api here
+  const { login } = useAuth()
+  const navigate = useNavigate()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  })
+
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      const response = await login({
+        email: data.email,
+        password: data.password
+      })
+
+      if (!response.status) {
+        return setError('root', {
+          type: 'manual',
+          message: response.message
+        })
+      }
+
+      if (!response.data.token) {
+        return navigate('/verify-2fa')
+      }
+
+      return navigate('/')
+    } catch (err) {
+      setError('root', {
+        type: 'manual',
+        message: err instanceof Error ? err.message : 'Erro ao fazer login.'
+      })
+    }
   }
 
   return (
@@ -18,36 +64,41 @@ export default function Login() {
       </CardHeader>
 
       <CardContent className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <Label className="text-sm text-gray-500">Email</Label>
-          <Input
-            type="email"
-            className="h-10 outline-none focus-visible:ring-0"
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label className="text-sm text-gray-500">Senha</Label>
-          <Input
-            type="password"
-            className="h-10 outline-none focus-visible:ring-0"
-          />
-        </div>
-
-        <Link
-          to="/forgot-password"
-          className="ml-auto text-sm !text-orange-600"
+        <form
+          className="flex flex-col gap-6"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          Esqueci minha senha
-        </Link>
+          <FormInput
+            label="Email"
+            type="email"
+            error={errors.email?.message}
+            {...register('email')}
+          />
 
-        <AuthFooter
-          question="Não possui conta?"
-          linkText="Criar conta"
-          linkTo="/register"
-          buttonText="Entrar"
-          onSubmit={handleLogin}
-        />
+          <FormInput
+            label="Senha"
+            type="password"
+            error={errors.password?.message}
+            {...register('password')}
+          />
+
+          <ErrorAlert error={errors.root?.message} />
+
+          <Link
+            to="/forgot-password"
+            className="ml-auto text-sm !text-orange-600"
+          >
+            Esqueci minha senha
+          </Link>
+
+          <AuthFooter
+            question="Não possui conta?"
+            linkText="Criar conta"
+            linkTo="/register"
+            buttonText={isSubmitting ? 'Entrando...' : 'Entrar'}
+            disabled={isSubmitting}
+          />
+        </form>
       </CardContent>
     </>
   )
