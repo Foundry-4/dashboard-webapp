@@ -31,9 +31,19 @@ interface AuthContextType {
     confirmEmail: string,
     password: string
   ) => Promise<AuthResponse>
-  forgotPassword: (email: string) => Promise<void>
-  resetPassword: (token: string, password: string) => Promise<void>
+  forgotPassword: (email: string) => Promise<AuthResponse>
+  resetPassword: (
+    userGuid: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => Promise<AuthResponse>
   verify2FA: (otp: string) => Promise<AuthResponse>
+  changePassword: (
+    userGuid: string,
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => Promise<AuthResponse>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -50,6 +60,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const loginUser = AuthMutations.useLogin()
   const forgotPasswordMutation = AuthMutations.useForgotPassword()
   const verify2FAMutation = AuthMutations.useVerify2FA()
+  const resetPasswordMutation = AuthMutations.useResetPassword()
+  const changePasswordMutation = AuthMutations.useChangePassword()
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -122,16 +134,43 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   const forgotPassword = async (email: string) => {
-    await forgotPasswordMutation.mutateAsync({ email })
+    const response = await forgotPasswordMutation.mutateAsync({ email })
+    return response
   }
 
-  const resetPassword = async (token: string, password: string) => {
+  const resetPassword = async (
+    userGuid: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const response = await resetPasswordMutation.mutateAsync({
+        userGuid,
+        newPassword,
+        confirmPassword
+      })
+
+      return response
     } catch (error) {
       console.error('Reset password failed:', error)
       throw new Error('Falha ao redefinir senha.')
     }
+  }
+
+  const changePassword = async (
+    userGuid: string,
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => {
+    const response = await changePasswordMutation.mutateAsync({
+      userGuid,
+      currentPassword,
+      newPassword,
+      confirmPassword
+    })
+
+    return response
   }
 
   const isLoading = false
@@ -146,7 +185,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     register,
     forgotPassword,
     resetPassword,
-    verify2FA
+    verify2FA,
+    changePassword
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

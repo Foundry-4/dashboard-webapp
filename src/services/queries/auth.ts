@@ -1,11 +1,14 @@
 import type { AuthResponse } from '@/domain/interfaces/auth'
+import type { AxiosError } from 'axios'
+
+import { changePassword } from '@/services/requests/auth/change-password'
 import { confirmAccount } from '@/services/requests/auth/confirm-account'
 import { createUser } from '@/services/requests/auth/create-user'
 import { forgotPassword } from '@/services/requests/auth/forgot-password'
 import { login } from '@/services/requests/auth/login'
+import { resetPassword } from '@/services/requests/auth/reset-password'
 import { verify2FA } from '@/services/requests/auth/verify-2fa'
 import { useMutation } from '@tanstack/react-query'
-import type { AxiosError } from 'axios'
 
 export const useCreateUser = () => {
   return useMutation({
@@ -34,6 +37,12 @@ export const useConfirmAccount = () => {
   })
 }
 
+export const useVerify2FA = () => {
+  return useMutation({
+    mutationFn: verify2FA
+  })
+}
+
 export const useForgotPassword = () => {
   return useMutation({
     mutationFn: forgotPassword,
@@ -43,9 +52,21 @@ export const useForgotPassword = () => {
   })
 }
 
-export const useVerify2FA = () => {
+export const useResetPassword = () => {
   return useMutation({
-    mutationFn: verify2FA
+    mutationFn: resetPassword,
+    onError: () => {
+      throw new Error('Falha ao resetar senha.')
+    }
+  })
+}
+
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: changePassword,
+    onError: () => {
+      throw new Error('Falha ao alterar senha.')
+    }
   })
 }
 
@@ -59,5 +80,7 @@ export const AuthMutations = {
   useLogin,
   useForgotPassword,
   useConfirmAccount,
-  useVerify2FA
+  useVerify2FA,
+  useResetPassword,
+  useChangePassword
 }

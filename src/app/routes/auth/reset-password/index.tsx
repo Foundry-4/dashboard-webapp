@@ -11,12 +11,16 @@ import { z } from 'zod'
 
 const resetPasswordSchema = z
   .object({
-    password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
+    newPassword: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
     confirmPassword: z
       .string()
       .min(6, 'A senha deve ter pelo menos 6 caracteres')
+      .regex(/[A-Z]/, 'Senha deve conter pelo menos uma letra maiúscula')
+      .regex(/[a-z]/, 'Senha deve conter pelo menos uma letra minúscula')
+      .regex(/[0-9]/, 'Senha deve conter pelo menos um número')
+      .regex(/[!@#$%^&*]/, 'Senha deve conter pelo menos um caractere especial')
   })
-  .refine(data => data.password === data.confirmPassword, {
+  .refine(data => data.newPassword === data.confirmPassword, {
     message: 'As senhas não coincidem',
     path: ['confirmPassword']
   })
@@ -29,9 +33,9 @@ export const meta: MetaFunction = () => [
 
 export default function ResetPassword() {
   const { resetPassword } = useAuth()
-  const [success, setSuccess] = useState(false)
+  const [message, setMessage] = useState('')
   const [searchParams] = useSearchParams()
-  const token = searchParams.get('token')
+  const userGuid = searchParams.get('user-guid')
 
   const {
     register,
@@ -41,23 +45,29 @@ export default function ResetPassword() {
   } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      password: '',
+      newPassword: '',
       confirmPassword: ''
     }
   })
 
   const onSubmit = async (data: ResetPasswordFormData) => {
-    if (!token) {
-      setError('root', {
-        type: 'manual',
-        message: 'Token de redefinição inválido.'
-      })
-      return
-    }
-
     try {
-      await resetPassword(token, data.password)
-      setSuccess(true)
+      const response = await resetPassword(
+        userGuid ?? '',
+        data.newPassword,
+        data.confirmPassword
+      )
+
+      if (!response.status) {
+        setMessage('')
+        setError('root', {
+          type: 'manual',
+          message: response.message
+        })
+        return
+      }
+
+      setMessage(response.message)
     } catch (err) {
       console.error('Reset password error:', err)
       setError('root', {
@@ -65,56 +75,6 @@ export default function ResetPassword() {
         message: err instanceof Error ? err.message : 'Erro ao redefinir senha.'
       })
     }
-  }
-
-  if (success) {
-    return (
-      <>
-        <CardHeader>
-          <CardTitle className="text-center text-4xl">
-            Senha redefinida!
-          </CardTitle>
-        </CardHeader>
-
-        <CardContent className="flex flex-col gap-6">
-          <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
-            Sua senha foi redefinida com sucesso. Você pode fazer login agora.
-          </div>
-
-          <AuthFooter
-            question="Pronto para fazer login?"
-            linkText="Acessar conta"
-            linkTo="/login"
-            buttonText="Ir para login"
-            disabled={false}
-          />
-        </CardContent>
-      </>
-    )
-  }
-
-  if (!token) {
-    return (
-      <>
-        <CardHeader>
-          <CardTitle className="text-center text-4xl">Token inválido</CardTitle>
-        </CardHeader>
-
-        <CardContent className="flex flex-col gap-6">
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-            O token de redefinição é inválido ou expirou.
-          </div>
-
-          <AuthFooter
-            question="Precisa de ajuda?"
-            linkText="Solicitar nova senha"
-            linkTo="/forgot-password"
-            buttonText="Solicitar nova senha"
-            disabled={false}
-          />
-        </CardContent>
-      </>
-    )
   }
 
   return (
@@ -128,23 +88,17 @@ export default function ResetPassword() {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
-          {errors.root && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {errors.root.message}
-            </div>
-          )}
-
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-gray-500">Nova senha</Label>
             <Input
               type="password"
-              {...register('password')}
+              {...register('newPassword')}
               className="h-10 outline-none focus-visible:ring-0"
               disabled={isSubmitting}
             />
-            {errors.password && (
+            {errors.newPassword && (
               <span className="text-sm text-red-600">
-                {errors.password.message}
+                {errors.newPassword.message}
               </span>
             )}
           </div>
@@ -165,6 +119,18 @@ export default function ResetPassword() {
               </span>
             )}
           </div>
+
+          {errors.root && (
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+              {errors.root.message}
+            </div>
+          )}
+
+          {message && (
+            <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
+              {message}
+            </div>
+          )}
 
           <AuthFooter
             question="Lembrou sua senha?"

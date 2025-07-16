@@ -26,7 +26,7 @@ export const meta: MetaFunction = () => [
 
 export default function ForgotPassword() {
   const { forgotPassword } = useAuth()
-  const [success, setSuccess] = useState(false)
+  const [message, setMessage] = useState('')
 
   const {
     register,
@@ -42,8 +42,16 @@ export default function ForgotPassword() {
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      await forgotPassword(data.email)
-      setSuccess(true)
+      const response = await forgotPassword(data.email)
+      if (!response.status) {
+        setMessage('')
+        setError('root', {
+          type: 'manual',
+          message: response.message
+        })
+        return
+      }
+      setMessage(response.message)
     } catch (err) {
       console.error('Forgot password error:', err)
       setError('root', {
@@ -56,39 +64,18 @@ export default function ForgotPassword() {
     }
   }
 
-  if (success) {
-    return (
-      <>
-        <CardHeader>
-          <CardTitle className="text-center text-4xl">Email enviado!</CardTitle>
-        </CardHeader>
-
-        <CardContent className="flex flex-col gap-6">
-          <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
-            Enviamos um email com instruções para redefinir sua senha.
-          </div>
-
-          <AuthFooter
-            question="Lembrou sua senha?"
-            linkText="Fazer login"
-            linkTo="/login"
-            buttonText="Voltar ao login"
-            disabled={false}
-          />
-        </CardContent>
-      </>
-    )
-  }
-
   return (
     <>
       <CardHeader>
         <CardTitle className="text-center text-4xl">
-          Esqueci minha senha
+          {message ? 'Email enviado!' : 'Esqueci minha senha'}
         </CardTitle>
-        <CardDescription>
-          Digite seu email e enviaremos instruções para redefinir sua senha.
-        </CardDescription>
+
+        {!message && (
+          <CardDescription>
+            Digite seu email e enviaremos instruções para redefinir sua senha.
+          </CardDescription>
+        )}
       </CardHeader>
 
       <CardContent className="flex flex-col gap-6">
@@ -96,12 +83,6 @@ export default function ForgotPassword() {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
-          {errors.root && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {errors.root.message}
-            </div>
-          )}
-
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-gray-500">Email</Label>
             <Input
@@ -116,6 +97,18 @@ export default function ForgotPassword() {
               </span>
             )}
           </div>
+
+          {errors.root && (
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+              {errors.root.message}
+            </div>
+          )}
+
+          {message && (
+            <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
+              {message}
+            </div>
+          )}
 
           <AuthFooter
             question="Lembrou sua senha?"
