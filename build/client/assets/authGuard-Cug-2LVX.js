@@ -1,0 +1,1 @@
+import{o as t,N as o}from"./chunk-QMGIS6GS-u2wsVBQ8.js";import{u}from"./AuthContext-DymqdCtb.js";const i=({children:s,isPrivate:r})=>{const{isAuthenticated:e}=u();return e&&!r?t.jsx(o,{to:"/",replace:!0}):!e&&r?t.jsx(o,{to:"/login",replace:!0}):t.jsx(t.Fragment,{children:s})};export{i as A};
