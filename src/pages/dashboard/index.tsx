@@ -1,6 +1,5 @@
 import { useAuth } from '@/contexts/AuthContext'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
-import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -42,16 +41,6 @@ export default function Dashboard() {
             Entre em contato com nossa equipe de suporte.
           </p>
         </div>
-
-        <Link
-          to="/change-password"
-          className="rounded-lg bg-white p-6 shadow-sm"
-        >
-          <h3 className="text-lg font-semibold text-gray-900">Alterar senha</h3>
-          <p className="mt-2 text-sm text-gray-600">
-            Altere sua senha de acesso.
-          </p>
-        </Link>
       </div>
     </div>
   )
