@@ -8,12 +8,9 @@ import { changePasswordSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { type MetaFunction } from 'react-router'
 import { z } from 'zod'
 
 type ChangePasswordFormData = z.infer<typeof changePasswordSchema>
-
-export const meta: MetaFunction = () => [{ title: 'Alterar senha - NaMesaJá' }]
 
 export default function ChangePassword() {
   const { user, changePassword } = useAuth()

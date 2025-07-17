@@ -8,14 +8,10 @@ import { resetPasswordSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { type MetaFunction, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
-
-export const meta: MetaFunction = () => [
-  { title: 'Redefinir senha - NaMesaJá' }
-]
 
 export default function ResetPassword() {
   const { resetPassword } = useAuth()

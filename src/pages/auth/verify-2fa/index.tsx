@@ -15,12 +15,9 @@ import { useAuth } from '@/contexts/AuthContext'
 import { verify2FASchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import type { MetaFunction } from 'react-router'
 import { z } from 'zod'
 
 type Verify2FAFormData = z.infer<typeof verify2FASchema>
-
-export const meta: MetaFunction = () => [{ title: 'Verificar 2FA - NaMesaJá' }]
 
 export default function Verify2FA() {
   const { verify2FA } = useAuth()
@@ -102,7 +99,7 @@ export default function Verify2FA() {
           <AuthFooter
             question="Não recebeu o código?"
             linkText="Enviar novamente"
-            linkTo="/auth/verify-2fa"
+            linkTo="/verify-2fa"
             buttonText={isSubmitting ? 'Verificando...' : 'Verificar código'}
             disabled={isSubmitting}
           />

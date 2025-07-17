@@ -2,11 +2,7 @@ import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardHeader, CardTitle } from '@/components/ui/card'
 import { AuthMutations } from '@/services/queries/auth'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSearchParams, type MetaFunction } from 'react-router'
-
-export const meta: MetaFunction = () => [
-  { title: 'Confirmar conta - NaMesaJá' }
-]
+import { useSearchParams } from 'react-router-dom'
 
 export default function ConfirmAccount() {
   const [searchParams] = useSearchParams()

@@ -13,14 +13,9 @@ import { forgotPasswordSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { type MetaFunction } from 'react-router'
 import { z } from 'zod'
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>
-
-export const meta: MetaFunction = () => [
-  { title: 'Esqueci minha senha - NaMesaJá' }
-]
 
 export default function ForgotPassword() {
   const { forgotPassword } = useAuth()

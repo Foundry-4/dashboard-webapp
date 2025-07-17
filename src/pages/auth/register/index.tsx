@@ -2,57 +2,57 @@ import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
 import { FormInput } from '@/components/ui/custom/FormInput'
+import { MessageAlert } from '@/components/ui/custom/MessageAlert'
 import { useAuth } from '@/contexts/AuthContext'
-import { loginSchema } from '@/domain/schemas/auth'
+import { registerSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { type MetaFunction, Link, useNavigate } from 'react-router'
 import { z } from 'zod'
 
-type LoginFormData = z.infer<typeof loginSchema>
+type RegisterFormData = z.infer<typeof registerSchema>
 
-export const meta: MetaFunction = () => [{ title: 'Login - NaMesaJá' }]
-
-export default function Login() {
-  const { login } = useAuth()
-  const navigate = useNavigate()
+export default function Register() {
+  const { register: registerUser } = useAuth()
+  const [message, setMessage] = useState('')
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setError
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: '',
       email: '',
+      confirmEmail: '',
       password: ''
     }
   })
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
     try {
-      const response = await login({
+      const response = await registerUser({
+        name: data.name,
         email: data.email,
+        confirmEmail: data.confirmEmail,
         password: data.password
       })
 
       if (!response.status) {
+        setMessage('')
         return setError('root', {
           type: 'manual',
           message: response.message
         })
       }
-
-      if (!response.data.token) {
-        return navigate('/verify-2fa')
-      }
-
-      return navigate('/')
+      setMessage(response.message)
     } catch (err) {
+      console.error('Registration error:', err)
       setError('root', {
         type: 'manual',
-        message: err instanceof Error ? err.message : 'Erro ao fazer login.'
+        message: err instanceof Error ? err.message : 'Erro ao criar conta.'
       })
     }
   }
@@ -60,7 +60,7 @@ export default function Login() {
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-center text-4xl">Acesse sua conta</CardTitle>
+        <CardTitle className="text-center text-4xl">Crie sua conta</CardTitle>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-6">
@@ -69,33 +69,41 @@ export default function Login() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <FormInput
-            label="Email"
+            label="Nome *"
+            type="text"
+            error={errors.name?.message}
+            {...register('name')}
+          />
+
+          <FormInput
+            label="Email *"
             type="email"
             error={errors.email?.message}
             {...register('email')}
           />
 
           <FormInput
-            label="Senha"
+            label="Confirmar email *"
+            type="email"
+            error={errors.confirmEmail?.message}
+            {...register('confirmEmail')}
+          />
+
+          <FormInput
+            label="Senha *"
             type="password"
             error={errors.password?.message}
             {...register('password')}
           />
 
           <ErrorAlert error={errors.root?.message} />
-
-          <Link
-            to="/forgot-password"
-            className="ml-auto text-sm !text-orange-600"
-          >
-            Esqueci minha senha
-          </Link>
+          <MessageAlert message={message} />
 
           <AuthFooter
-            question="Não possui conta?"
-            linkText="Criar conta"
-            linkTo="/register"
-            buttonText={isSubmitting ? 'Entrando...' : 'Entrar'}
+            question="Já possui conta?"
+            linkText="Acessar conta"
+            linkTo="/login"
+            buttonText={isSubmitting ? 'Criando conta...' : 'Criar conta'}
             disabled={isSubmitting}
           />
         </form>

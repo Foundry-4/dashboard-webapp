@@ -1,0 +1,28 @@
+import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import { AppRoutes } from '@/routes';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Suspense } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false
+    }
+  }
+})
+
+export const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Suspense fallback={<LoadingSpinner />}>
+          <AppRoutes />
+        </Suspense>
+      </AuthProvider>
+    </QueryClientProvider>
+  )
+}
+
+export default App; 

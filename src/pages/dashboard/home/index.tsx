@@ -1,10 +1,14 @@
 import { useAuth } from '@/contexts/AuthContext'
-import { Link, type MetaFunction } from 'react-router'
-
-export const meta: MetaFunction = () => [{ title: 'Dashboard - NaMesaJá' }]
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
   const { user } = useAuth()
+
+  // Set dynamic title with user name
+  useDocumentTitle(`Bem-vindo, ${user?.name || 'Usuário'}!`, {
+    suffix: 'NaMesaJá'
+  })
 
   return (
     <div className="space-y-6">
