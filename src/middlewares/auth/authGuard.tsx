@@ -1,12 +1,11 @@
 import { useAuth } from '@/contexts/AuthContext'
-import { Navigate } from 'react-router'
+import { Navigate, Outlet } from 'react-router'
 
 interface AuthGuardProps {
-  children: React.ReactNode
   isPrivate: boolean
 }
 
-export const AuthGuard = ({ children, isPrivate }: AuthGuardProps) => {
+export const AuthGuard = ({ isPrivate }: AuthGuardProps) => {
   const { isAuthenticated } = useAuth()
 
   if (isAuthenticated && !isPrivate) {
@@ -27,5 +26,5 @@ export const AuthGuard = ({ children, isPrivate }: AuthGuardProps) => {
     )
   }
 
-  return <>{children}</>
+  return <Outlet />
 }
