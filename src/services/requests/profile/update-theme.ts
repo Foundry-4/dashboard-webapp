@@ -5,6 +5,6 @@ interface UpdateThemeParams {
 }
 
 export const updateTheme = async (params: UpdateThemeParams) => {
-  const response = await api.put('/me/settings/theme', params)
+  const response = await api.put('/profile/settings/update-theme', params)
   return response.data
 }

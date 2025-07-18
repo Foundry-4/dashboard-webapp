@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
 
 import { Switch2FA } from '@/components/profile/Switch2FA'
-import { SettingsQueries } from '@/services/queries/settings'
+import { ProfileQueries } from '@/services/queries/profile'
 
 export default function Profile() {
-  const userProfile = SettingsQueries.useGetMeProfile()
+  const userProfile = ProfileQueries.useGetProfile()
   const is2FAEnabled = userProfile.data?.twoFactorEnabled
 
   return (

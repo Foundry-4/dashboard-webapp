@@ -5,6 +5,6 @@ interface Update2FAProps {
 }
 
 export const update2FA = async (params: Update2FAProps) => {
-  const response = await api.put('/me/settings/2fa', params)
+  const response = await api.put('/profile/settings/update-2fa', params)
   return response.data
 }

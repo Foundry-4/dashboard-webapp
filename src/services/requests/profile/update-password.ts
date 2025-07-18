@@ -7,6 +7,6 @@ interface UpdatePasswordParams {
 }
 
 export const updatePassword = async (params: UpdatePasswordParams) => {
-  const response = await api.put('/me/settings/password', params)
+  const response = await api.put('/profile/settings/update-password', params)
   return response.data
 }
