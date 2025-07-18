@@ -1,7 +1,8 @@
-import { PageTitle } from '@/components/common/PageTitle'
-import ChangePassword from '@/pages/dashboard/profile/change-password'
 import { Route, Routes } from 'react-router-dom'
-import Profile from '../pages/dashboard/profile'
+
+import { PageTitle } from '@/components/common/PageTitle'
+import Profile from '@/pages/dashboard/profile'
+import ChangePassword from '@/pages/dashboard/profile/change-password'
 
 export default function ProfileRoutes() {
   return (

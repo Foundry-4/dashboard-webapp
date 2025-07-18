@@ -1,9 +1,20 @@
 import { Link } from 'react-router-dom'
 
+import { Switch2FA } from '@/components/profile/Switch2FA'
+import { SettingsQueries } from '@/services/queries/settings'
+
 export default function Profile() {
+  const userProfile = SettingsQueries.useGetMeProfile()
+  const is2FAEnabled = userProfile.data?.twoFactorEnabled
+
   return (
     <div className="flex w-full flex-col gap-6">
       <h1>Profile</h1>
+
+      <Switch2FA
+        is2FAEnabled={is2FAEnabled}
+        isLoading={userProfile.isLoading}
+      />
 
       <Link
         to="/profile/change-password"

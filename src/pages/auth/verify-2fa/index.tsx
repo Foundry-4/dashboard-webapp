@@ -1,3 +1,7 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
 import { AuthFooter } from '@/components/auth/AuthFooter'
 import {
   CardContent,
@@ -11,11 +15,8 @@ import {
   InputOTPGroup,
   InputOTPSlot
 } from '@/components/ui/input-otp'
-import { useAuth } from '@/contexts/AuthContext'
 import { verify2FASchema } from '@/domain/schemas/auth'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { useAuth } from '@/hooks/useAuth'
 
 type Verify2FAFormData = z.infer<typeof verify2FASchema>
 

@@ -1,8 +1,9 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+
 import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardHeader, CardTitle } from '@/components/ui/card'
 import { AuthMutations } from '@/services/queries/auth'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
 
 export default function ConfirmAccount() {
   const [searchParams] = useSearchParams()

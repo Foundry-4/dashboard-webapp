@@ -1,8 +1,10 @@
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { AppRoutes } from '@/routes';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Suspense } from 'react';
-import { AuthProvider } from './contexts/AuthContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Suspense } from 'react'
+
+import { AuthProvider } from './contexts/AuthContext'
+
+import { LoadingSpinner } from '@/components/common/LoadingSpinner'
+import { AppRoutes } from '@/routes'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,4 +27,4 @@ export const App = () => {
   )
 }
 
-export default App; 
+export default App

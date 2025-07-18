@@ -1,7 +1,9 @@
-import { Card } from '@/components/ui/card'
 import { ShieldCheck } from 'lucide-react'
 import { Outlet } from 'react-router'
+
 import { cn } from '../lib/utils'
+
+import { Card } from '@/components/ui/card'
 
 export default function AuthLayout() {
   const isSmallHeightScreen = window.innerHeight < 600

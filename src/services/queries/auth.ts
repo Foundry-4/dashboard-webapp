@@ -1,3 +1,5 @@
+import { useMutation } from '@tanstack/react-query'
+
 import type { AuthResponse } from '@/domain/interfaces/auth'
 import type { AxiosError } from 'axios'
 
@@ -8,7 +10,6 @@ import { forgotPassword } from '@/services/requests/auth/forgot-password'
 import { login } from '@/services/requests/auth/login'
 import { resetPassword } from '@/services/requests/auth/reset-password'
 import { verify2FA } from '@/services/requests/auth/verify-2fa'
-import { useMutation } from '@tanstack/react-query'
 
 export const useCreateUser = () => {
   return useMutation({
