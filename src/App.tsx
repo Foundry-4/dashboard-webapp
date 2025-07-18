@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import { AuthProvider } from './contexts/AuthContext'
 
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
+import { Toaster } from '@/components/ui/sonner'
 import { AppRoutes } from '@/routes'
 
 const queryClient = new QueryClient({
@@ -21,6 +22,7 @@ export const App = () => {
       <AuthProvider>
         <Suspense fallback={<LoadingSpinner />}>
           <AppRoutes />
+          <Toaster />
         </Suspense>
       </AuthProvider>
     </QueryClientProvider>

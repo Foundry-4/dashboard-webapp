@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
+import { toast } from 'sonner'
 
 import { getMeProfile } from '@/services/requests/settings/get-me-infos'
 import { update2FA } from '@/services/requests/settings/update-2fa'
@@ -35,12 +36,19 @@ export const useUpdate2FA = () => {
       // Return a context object with the snapshotted value
       return { previousProfile }
     },
+    onSuccess: response => {
+      // Show success message from server response
+      toast.success(response.message || '2FA atualizado com sucesso.')
+    },
     onError: (error: AxiosError, _, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousProfile) {
         queryClient.setQueryData(['me-profile'], context.previousProfile)
       }
-      console.log(error)
+      toast.error(
+        (error.response?.data as { message?: string })?.message ||
+          'Erro ao atualizar 2FA. Tente novamente.'
+      )
     },
     onSettled: () => {
       // Always refetch after error or success
