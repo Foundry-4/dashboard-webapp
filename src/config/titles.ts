@@ -1,4 +1,4 @@
-export const PAGE_TITLES = {
+export const ROUTE_TITLES = {
   // Dashboard pages
   dashboard: 'Dashboard | NaMesaJá',
   changePassword: 'Alterar senha | NaMesaJá',
@@ -16,4 +16,14 @@ export const PAGE_TITLES = {
   default: 'NaMesaJá'
 } as const
 
-export type PageTitleKey = keyof typeof PAGE_TITLES
+export type RouteTitleKeys = keyof typeof ROUTE_TITLES
+
+export const PAGE_TITLES = {
+  dashboard: 'Dashboard',
+  profile: 'Perfil',
+  changePassword: 'Alterar senha',
+  roles: 'Cargos',
+  users: 'Usuários'
+} as const
+
+export type PageTitleKeys = keyof typeof PAGE_TITLES

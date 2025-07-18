@@ -23,11 +23,13 @@ export const Switch2FA = ({ is2FAEnabled, isLoading }: Switch2FAProps) => {
   return (
     <div className="flex flex-row items-center gap-4">
       <Switch
-        aria-label="Atualizar 2FA"
+        aria-label="Habilitar autenticação de dois fatores"
         checked={is2FAEnabled}
         onCheckedChange={() => handleUpdate2FA(!is2FAEnabled)}
       />
-      <Label className="text-sm font-bold text-gray-900">Atualizar 2FA</Label>
+      <Label className="text-sm font-medium text-gray-900">
+        Habilitar autenticação de dois fatores
+      </Label>
     </div>
   )
 }
