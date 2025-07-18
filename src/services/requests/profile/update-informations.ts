@@ -6,6 +6,9 @@ interface UpdateInformationsParams {
 }
 
 export const updateInformations = async (params: UpdateInformationsParams) => {
-  const response = await api.put('/me/settings/informations', params)
+  const response = await api.put(
+    '/profile/settings/update-informations',
+    params
+  )
   return response.data
 }
