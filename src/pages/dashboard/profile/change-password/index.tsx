@@ -1,14 +1,15 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
 import { AuthFooter } from '@/components/auth/AuthFooter'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
 import { FormInput } from '@/components/ui/custom/FormInput'
 import { MessageAlert } from '@/components/ui/custom/MessageAlert'
-import { useAuth } from '@/contexts/AuthContext'
 import { changePasswordSchema } from '@/domain/schemas/auth'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { useAuth } from '@/hooks/useAuth'
 
 type ChangePasswordFormData = z.infer<typeof changePasswordSchema>
 

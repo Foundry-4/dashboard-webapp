@@ -1,6 +1,5 @@
-import { api } from '@/services/api'
-
 import type { AuthResponse } from '@/domain/interfaces/auth'
+import { api } from '@/services/api'
 
 export interface ResetPasswordRequest {
   userGuid: string

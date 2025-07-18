@@ -1,13 +1,14 @@
-import { AuthFooter } from '@/components/auth/AuthFooter'
-import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
-import { FormInput } from '@/components/ui/custom/FormInput'
-import { useAuth } from '@/contexts/AuthContext'
-import { loginSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
+
+import { AuthFooter } from '@/components/auth/AuthFooter'
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
+import { FormInput } from '@/components/ui/custom/FormInput'
+import { loginSchema } from '@/domain/schemas/auth'
+import { useAuth } from '@/hooks/useAuth'
 
 type LoginFormData = z.infer<typeof loginSchema>
 

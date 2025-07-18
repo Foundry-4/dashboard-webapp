@@ -2,7 +2,8 @@ export const PAGE_TITLES = {
   // Dashboard pages
   dashboard: 'Dashboard | NaMesaJá',
   changePassword: 'Alterar senha | NaMesaJá',
-  
+  profile: 'Perfil | NaMesaJá',
+
   // Auth pages
   login: 'Entrar | NaMesaJá',
   register: 'Cadastrar | NaMesaJá',
@@ -10,9 +11,9 @@ export const PAGE_TITLES = {
   resetPassword: 'Redefinir Senha | NaMesaJá',
   confirmAccount: 'Confirmar Conta | NaMesaJá',
   verify2FA: 'Verificação de dois fatores | NaMesaJá',
-  
+
   // Default
   default: 'NaMesaJá'
-} as const;
+} as const
 
-export type PageTitleKey = keyof typeof PAGE_TITLES; 
+export type PageTitleKey = keyof typeof PAGE_TITLES

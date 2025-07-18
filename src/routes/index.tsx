@@ -1,3 +1,7 @@
+import { lazy, Suspense } from 'react'
+import { Route, Routes } from 'react-router-dom'
+
+import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { PageTitle } from '@/components/common/PageTitle'
 import AuthLayout from '@/layouts/AuthLayout'
 import DashboardLayout from '@/layouts/DashboardLayout'
@@ -8,10 +12,10 @@ import Login from '@/pages/auth/login'
 import Register from '@/pages/auth/register'
 import ResetPassword from '@/pages/auth/reset-password'
 import Verify2FA from '@/pages/auth/verify-2fa'
-import ChangePassword from '@/pages/dashboard/change-password'
-import Dashboard from '@/pages/dashboard/home'
+import Dashboard from '@/pages/dashboard'
 import NotFound from '@/pages/NotFound'
-import { Route, Routes } from 'react-router-dom'
+
+const ProfileRoutes = lazy(() => import('./profileRoutes'))
 
 export const AppRoutes = () => {
   return (
@@ -80,11 +84,11 @@ export const AppRoutes = () => {
             }
           />
           <Route
-            path="/change-password"
+            path="/profile/*"
             element={
-              <PageTitle titleKey="changePassword">
-                <ChangePassword />
-              </PageTitle>
+              <Suspense fallback={<LoadingSpinner />}>
+                <ProfileRoutes />
+              </Suspense>
             }
           />
         </Route>

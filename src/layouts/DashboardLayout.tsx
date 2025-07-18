@@ -1,7 +1,9 @@
-import { Button } from '@/components/ui/button'
-import { useAuth } from '@/contexts/AuthContext'
 import { LogOut, User } from 'lucide-react'
 import { Outlet, useNavigate } from 'react-router'
+import { Link } from 'react-router-dom'
+
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth()
@@ -36,7 +38,7 @@ export default function DashboardLayout() {
       </div>
 
       {/* Main content */}
-      <div className="flex flex-1 flex-col">
+      <div className="flex w-[calc(100vw-256px)] flex-1 flex-col">
         {/* Header */}
         <header className="flex h-16 items-center justify-between bg-white px-6 shadow-sm">
           <div className="flex items-center gap-4">
@@ -48,6 +50,7 @@ export default function DashboardLayout() {
               <User className="h-4 w-4 text-gray-500" />
               <span className="text-sm text-gray-700">{user?.name}</span>
             </div>
+            <Link to="/profile">Perfil</Link>
             <Button
               variant="outline"
               size="sm"

@@ -1,15 +1,16 @@
-import { AuthFooter } from '@/components/auth/AuthFooter'
-import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
-import { FormInput } from '@/components/ui/custom/FormInput'
-import { MessageAlert } from '@/components/ui/custom/MessageAlert'
-import { useAuth } from '@/contexts/AuthContext'
-import { resetPasswordSchema } from '@/domain/schemas/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
+
+import { AuthFooter } from '@/components/auth/AuthFooter'
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ErrorAlert } from '@/components/ui/custom/ErrorAlert'
+import { FormInput } from '@/components/ui/custom/FormInput'
+import { MessageAlert } from '@/components/ui/custom/MessageAlert'
+import { resetPasswordSchema } from '@/domain/schemas/auth'
+import { useAuth } from '@/hooks/useAuth'
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
 

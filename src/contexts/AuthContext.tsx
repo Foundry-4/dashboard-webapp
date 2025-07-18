@@ -1,13 +1,11 @@
-import { AuthMutations } from '@/services/queries/auth'
 import {
-  createContext,
-  useContext,
   useEffect,
   useState,
   type Dispatch,
   type ReactNode,
   type SetStateAction
 } from 'react'
+
 import type {
   AuthResponse,
   ChangePasswordProps,
@@ -16,7 +14,11 @@ import type {
   RegisterProps,
   ResetPasswordProps,
   Verify2FAProps
-} from '../domain/interfaces/auth'
+} from '@/domain/interfaces/auth'
+
+import { AuthContext } from '@/hooks/useAuth'
+import { api } from '@/services/api'
+import { AuthMutations } from '@/services/queries/auth'
 
 interface User {
   userId: string
@@ -26,7 +28,7 @@ interface User {
   token?: string
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
   setUser: Dispatch<SetStateAction<User | null>>
@@ -38,8 +40,6 @@ interface AuthContextType {
   verify2FA: (props: Verify2FAProps) => Promise<AuthResponse>
   changePassword: (props: ChangePasswordProps) => Promise<AuthResponse>
 }
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 interface AuthProviderProps {
   children: ReactNode
@@ -76,6 +76,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     setUser(null)
     localStorage.removeItem('na-mesa-ja:user')
+    // Clear the authorization header from axios
+    delete api.defaults.headers.common['Authorization']
   }
 
   const register = async ({
@@ -177,12 +179,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
 }
