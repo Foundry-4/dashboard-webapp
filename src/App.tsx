@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Suspense } from 'react'
 
-import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider } from '@/contexts/AuthContext'
@@ -25,7 +24,7 @@ export const App = () => {
       <AuthProvider>
         <ThemeProvider>
           <SidebarProvider>
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense>
               <AppRoutes />
               <Toaster />
             </Suspense>

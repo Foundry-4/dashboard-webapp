@@ -1,4 +1,5 @@
 import type { AuthResponse } from '@/domain/interfaces/auth'
+
 import { api } from '@/services/api'
 
 interface Verify2FAProps {

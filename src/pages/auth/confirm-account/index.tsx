@@ -23,7 +23,7 @@ export default function ConfirmAccount() {
         const response = await confirmAccount.mutateAsync({ userGuid })
 
         setMessage(response.message)
-      } catch (error) {
+      } catch {
         setMessage('Você já confirmou sua conta.')
       }
     },

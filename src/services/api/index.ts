@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+export const baseURL = 'https://api.namesaja.com.br'
+
 export const api = axios.create({
-  baseURL: 'https://api.namesaja.com.br'
+  baseURL
 })
 
 // Request interceptor to add Bearer token

@@ -1,4 +1,5 @@
 import type { AuthResponse } from '@/domain/interfaces/auth'
+
 import { api } from '@/services/api'
 
 export interface ChangePasswordRequest {
@@ -11,7 +12,7 @@ export interface ChangePasswordRequest {
 export const changePassword = async (
   params: ChangePasswordRequest
 ): Promise<AuthResponse> => {
-  const response = await api.post('/auth/change-password', params)
+  const response = await api.put('/auth/change-password', params)
 
   return response.data
 }

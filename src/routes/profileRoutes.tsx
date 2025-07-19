@@ -9,7 +9,11 @@ export default function ProfileRoutes() {
     <Routes>
       <Route
         path=""
-        element={<Profile />}
+        element={
+          <RouteTitle titleKey="profile">
+            <Profile />
+          </RouteTitle>
+        }
       />
       <Route
         path="change-password"
