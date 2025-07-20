@@ -25,7 +25,7 @@ export const App = () => {
       <AuthProvider>
         <ThemeProvider>
           <SidebarProvider>
-            <Suspense fallback={<LoadingSpinner fullScreen />}>
+            <Suspense fallback={<LoadingSpinner />}>
               <AppRoutes />
               <Toaster />
             </Suspense>
