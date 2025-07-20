@@ -16,6 +16,8 @@ import Dashboard from '@/pages/dashboard'
 import NotFound from '@/pages/NotFound'
 
 const ProfileRoutes = lazy(() => import('./profileRoutes'))
+const UserRoutes = lazy(() => import('./userRoutes'))
+const RolesRoutes = lazy(() => import('./rolesRoutes'))
 
 export const AppRoutes = () => {
   return (
@@ -86,8 +88,24 @@ export const AppRoutes = () => {
           <Route
             path="/profile/*"
             element={
-              <Suspense fallback={<LoadingSpinner />}>
+              <Suspense fallback={<LoadingSpinner disableFullScreen />}>
                 <ProfileRoutes />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/users/*"
+            element={
+              <Suspense fallback={<LoadingSpinner disableFullScreen />}>
+                <UserRoutes />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/roles/*"
+            element={
+              <Suspense fallback={<LoadingSpinner disableFullScreen />}>
+                <RolesRoutes />
               </Suspense>
             }
           />

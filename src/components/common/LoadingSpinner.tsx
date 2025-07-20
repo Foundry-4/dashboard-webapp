@@ -1,15 +1,15 @@
 import { cn } from '@/lib/utils'
 
 interface LoadingSpinnerProps {
-  fullScreen?: boolean
+  disableFullScreen?: boolean
 }
 
-export const LoadingSpinner = ({ fullScreen }: LoadingSpinnerProps) => {
+export const LoadingSpinner = ({ disableFullScreen }: LoadingSpinnerProps) => {
   return (
     <div
       className={cn(
-        'flex h-full w-full items-center justify-center',
-        fullScreen && '!h-screen !w-screen'
+        'flex !h-screen !w-screen items-center justify-center',
+        disableFullScreen && '!h-full !w-full'
       )}
     >
       <div className="flex flex-col items-center space-y-4">
