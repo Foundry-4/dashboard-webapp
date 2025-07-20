@@ -39,6 +39,7 @@ export const ModalTemplate = ({
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
+      aria-describedby={title}
     >
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 
@@ -51,8 +52,9 @@ export const ModalTemplate = ({
 
         <Separator />
 
-        <DialogFooter className="px-4">
+        <DialogFooter className="flex w-full flex-row items-center px-4">
           {extraModalActions}
+
           <Button
             variant="outline"
             size="sm"

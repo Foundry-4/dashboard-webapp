@@ -29,6 +29,7 @@ export const SettingsDropdown = () => {
         <Button
           variant="outline"
           size="sm"
+          className="!border-none"
         >
           <Settings className="h-4 w-4" />
         </Button>

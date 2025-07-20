@@ -10,7 +10,7 @@ export default function DashboardLayout() {
 
       <div className="flex w-full flex-1 flex-col">
         <DashboardLayoutHeader />
-        <main className="w-full flex-1 overflow-auto px-6 py-0">
+        <main className="w-full flex-1 overflow-auto px-6 py-0 pb-6">
           <Outlet />
         </main>
       </div>

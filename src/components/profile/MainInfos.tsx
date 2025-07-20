@@ -1,5 +1,4 @@
-import { AvatarUpload } from './AvatarUpload'
-
+import { AvatarUpload } from '@/components/profile/AvatarUpload'
 import { Card, CardContent } from '@/components/ui/card'
 import { baseURL } from '@/services/api'
 import { ProfileQueries } from '@/services/queries/profile'

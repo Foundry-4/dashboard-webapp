@@ -1,9 +1,13 @@
+import { useNavigate } from 'react-router-dom'
+
 import {
   Sidebar as ShadcnSidebar,
   SidebarHeader
 } from '@/components/ui/sidebar'
 
 export function Sidebar() {
+  const navigate = useNavigate()
+
   return (
     <ShadcnSidebar
       collapsible="icon"
@@ -11,7 +15,10 @@ export function Sidebar() {
       className="py-3"
     >
       <SidebarHeader className="py-0">
-        <div className="flex w-full flex-row items-center gap-2">
+        <div
+          className="flex w-full flex-row items-center gap-2"
+          onClick={() => navigate('/')}
+        >
           <img
             src="/favicon.png"
             alt="NaMesaJá"

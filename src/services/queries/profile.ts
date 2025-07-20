@@ -3,6 +3,7 @@ import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
 import { ProfileRefetchKeys } from '@/domain/constants/profile'
+import { deleteAvatar } from '@/services/requests/profile/delete-avatar'
 import { getProfile } from '@/services/requests/profile/get-profile'
 import { update2FA } from '@/services/requests/profile/update-2fa'
 import { updateAvatar } from '@/services/requests/profile/update-avatar'
@@ -145,6 +146,50 @@ export const useUpdateAvatar = () => {
   })
 }
 
+export const useDeleteAvatar = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: deleteAvatar,
+    onMutate: async () => {
+      await queryClient.cancelQueries({
+        queryKey: [ProfileRefetchKeys.PROFILE]
+      })
+      const previousProfile = queryClient.getQueryData([
+        ProfileRefetchKeys.PROFILE
+      ])
+
+      queryClient.setQueryData([ProfileRefetchKeys.PROFILE], (old: unknown) => {
+        const oldData = old as { profilePictureUrl?: string }
+        return {
+          ...oldData,
+          profilePictureUrl: null
+        }
+      })
+
+      return { previousProfile }
+    },
+    onSuccess: response => {
+      toast.success(response.message || 'Foto de perfil removida com sucesso.')
+    },
+    onError: (error: AxiosError, _, context) => {
+      if (context?.previousProfile) {
+        queryClient.setQueryData(
+          [ProfileRefetchKeys.PROFILE],
+          context.previousProfile
+        )
+      }
+      toast.error(
+        (error.response?.data as { message?: string })?.message ||
+          'Erro ao remover foto de perfil. Tente novamente.'
+      )
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [ProfileRefetchKeys.PROFILE] })
+    }
+  })
+}
+
 export const ProfileQueries = {
   useGetProfile
 }
@@ -152,5 +197,6 @@ export const ProfileQueries = {
 export const ProfileMutations = {
   useUpdate2FA,
   useUpdateTheme,
-  useUpdateAvatar
+  useUpdateAvatar,
+  useDeleteAvatar
 }
