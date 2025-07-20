@@ -1,7 +1,4 @@
-import { FolderKey, LayoutDashboard, Users } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-
-import { SidebarItem } from './Item'
 
 import {
   Sidebar as ShadcnSidebar,
@@ -13,6 +10,8 @@ import {
   SidebarMenu,
   useSidebar
 } from '@/components/ui/sidebar'
+import { SIDEBAR_GROUPS } from '@/config/routes'
+import { SidebarItem } from '@/layouts/DashboardLayout/Sidebar/Item'
 import { cn } from '@/lib/utils'
 
 export function Sidebar() {
@@ -43,31 +42,30 @@ export function Sidebar() {
 
       <SidebarContent className={cn('px-1 pt-18', open && 'px-2')}>
         <SidebarMenu>
-          <SidebarItem
-            icon={LayoutDashboard}
-            label="Início"
-            path="/"
-            iconClassName="!h-5 !w-5"
-          />
+          {SIDEBAR_GROUPS.map((group, groupIndex) => (
+            <SidebarGroup
+              key={groupIndex}
+              className="px-0"
+            >
+              {group.label && (
+                <SidebarGroupLabel className="px-0">
+                  <h2 className="text-xs font-medium">{group.label}</h2>
+                </SidebarGroupLabel>
+              )}
 
-          <SidebarGroup className="px-0">
-            <SidebarGroupLabel className="px-0">
-              <h2 className="text-xs font-medium">MENU</h2>
-            </SidebarGroupLabel>
-
-            <SidebarGroupContent className="flex flex-col gap-2">
-              <SidebarItem
-                icon={Users}
-                label="Usuários"
-                path="/users"
-              />
-              <SidebarItem
-                icon={FolderKey}
-                label="Cargos"
-                path="/roles"
-              />
-            </SidebarGroupContent>
-          </SidebarGroup>
+              <SidebarGroupContent className="flex flex-col gap-2">
+                {group.routes.map(route => (
+                  <SidebarItem
+                    key={route.path}
+                    icon={route.icon!}
+                    label={route.label!}
+                    path={route.path}
+                    iconClassName="!h-5 !w-5"
+                  />
+                ))}
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
         </SidebarMenu>
       </SidebarContent>
     </ShadcnSidebar>

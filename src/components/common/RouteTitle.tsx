@@ -1,16 +1,15 @@
-import type { RouteTitleKeys } from '@/config/titles'
 import type { ReactNode } from 'react'
 
-import { ROUTE_TITLES } from '@/config/titles'
+import { ROUTES } from '@/config/routes'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 interface RouteTitleProps {
-  titleKey: RouteTitleKeys
+  titleKey: keyof typeof ROUTES
   children: ReactNode
 }
 
 export const RouteTitle = ({ titleKey, children }: RouteTitleProps) => {
-  const title = ROUTE_TITLES[titleKey]
+  const title = ROUTES[titleKey].routeTitle
   useDocumentTitle(title)
 
   return <>{children}</>

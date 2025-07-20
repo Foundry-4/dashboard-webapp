@@ -1,19 +1,17 @@
 import { useLocation } from 'react-router-dom'
 
-import { PAGE_TITLES } from '../config/titles'
+import { getRouteByPath } from '@/config/routes'
 
 export const useCurrentPage = () => {
   const location = useLocation()
 
   const getPageTitle = (): string => {
     const path = location.pathname
+    const route = getRouteByPath(path)
 
-    // Dashboard routes
-    if (path === '/') return PAGE_TITLES.dashboard
-    if (path === '/profile') return PAGE_TITLES.profile
-    if (path === '/profile/change-password') return PAGE_TITLES.changePassword
-    if (path === '/users') return PAGE_TITLES.users
-    if (path === '/roles') return PAGE_TITLES.roles
+    if (route) {
+      return route.title
+    }
 
     // Handle unknown routes by extracting the path segment and capitalizing
     const pathSegments = path.split('/').filter(Boolean)
