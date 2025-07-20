@@ -111,24 +111,6 @@ export const useUpdateAvatar = () => {
 
   return useMutation({
     mutationFn: updateAvatar,
-    onMutate: async ({ picture }) => {
-      await queryClient.cancelQueries({
-        queryKey: [ProfileRefetchKeys.PROFILE]
-      })
-      const previousProfile = queryClient.getQueryData([
-        ProfileRefetchKeys.PROFILE
-      ])
-
-      queryClient.setQueryData([ProfileRefetchKeys.PROFILE], (old: unknown) => {
-        const oldData = old as { profilePictureUrl?: string }
-        return {
-          ...oldData,
-          profilePictureUrl: picture
-        }
-      })
-
-      return { previousProfile }
-    },
     onSuccess: response => {
       toast.success(
         response.message || 'Foto de perfil atualizado com sucesso.'
@@ -170,7 +152,15 @@ export const useDeleteAvatar = () => {
       return { previousProfile }
     },
     onSuccess: response => {
-      toast.success(response.message || 'Foto de perfil removida com sucesso.')
+      if (!response.data.status) {
+        return toast.error(
+          response.data.message || 'Foto de perfil não encontrada.'
+        )
+      }
+
+      toast.success(
+        response.data.message || 'Foto de perfil removida com sucesso.'
+      )
     },
     onError: (error: AxiosError, _, context) => {
       if (context?.previousProfile) {

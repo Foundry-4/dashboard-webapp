@@ -5,7 +5,9 @@ import { ProfileQueries } from '@/services/queries/profile'
 
 export const ProfileMainInfos = () => {
   const userProfile = ProfileQueries.useGetProfile()
-  const profilePictureUrl = `${baseURL}${userProfile.data?.profilePictureUrl}`
+  const profilePictureUrl = userProfile.data?.profilePictureUrl
+    ? `${baseURL}${userProfile.data?.profilePictureUrl}`
+    : undefined
 
   return (
     <Card>

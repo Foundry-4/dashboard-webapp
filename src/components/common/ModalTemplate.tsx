@@ -5,6 +5,7 @@ import { Button } from '../ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -14,11 +15,13 @@ import { Separator } from '@/components/ui/separator'
 
 interface ModalTemplateProps {
   title: string
+  description?: string
   children: React.ReactNode
   open: boolean
   trigger?: React.ReactNode
   extraModalActions?: React.ReactNode
   isSubmitting?: boolean
+  disableConfirm?: boolean
   onClose: () => void
   onConfirm: () => void
   onOpenChange: (open: boolean) => void
@@ -26,6 +29,7 @@ interface ModalTemplateProps {
 
 export const ModalTemplate = ({
   title,
+  description,
   children,
   open,
   trigger,
@@ -33,19 +37,20 @@ export const ModalTemplate = ({
   isSubmitting,
   onClose,
   onConfirm,
-  onOpenChange
+  onOpenChange,
+  disableConfirm
 }: ModalTemplateProps) => {
   return (
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
-      aria-describedby={title}
     >
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 
       <DialogContent className="rounded-sm px-0 py-4">
         <DialogHeader className="px-4 pb-2">
           <DialogTitle>{title}</DialogTitle>
+          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
 
         <div className="px-4">{children}</div>
@@ -65,7 +70,7 @@ export const ModalTemplate = ({
           <Button
             size="sm"
             onClick={onConfirm}
-            disabled={isSubmitting}
+            disabled={isSubmitting || disableConfirm}
             className="relative"
           >
             Salvar
