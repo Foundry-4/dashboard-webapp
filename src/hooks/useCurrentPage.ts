@@ -12,6 +12,8 @@ export const useCurrentPage = () => {
     if (path === '/') return PAGE_TITLES.dashboard
     if (path === '/profile') return PAGE_TITLES.profile
     if (path === '/profile/change-password') return PAGE_TITLES.changePassword
+    if (path === '/users') return PAGE_TITLES.users
+    if (path === '/roles') return PAGE_TITLES.roles
 
     // Handle unknown routes by extracting the path segment and capitalizing
     const pathSegments = path.split('/').filter(Boolean)

@@ -3,6 +3,8 @@ export const ROUTE_TITLES = {
   dashboard: 'Dashboard | NaMesaJá',
   changePassword: 'Alterar senha | NaMesaJá',
   profile: 'Perfil | NaMesaJá',
+  users: 'Usuários | NaMesaJá',
+  roles: 'Cargos | NaMesaJá',
 
   // Auth pages
   login: 'Entrar | NaMesaJá',
