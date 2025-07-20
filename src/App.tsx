@@ -1,17 +1,20 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Suspense } from 'react'
 
-import { AuthProvider } from './contexts/AuthContext'
-
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
+import { SidebarProvider } from '@/components/ui/sidebar'
 import { Toaster } from '@/components/ui/sonner'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 import { AppRoutes } from '@/routes'
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      retry: false
+      retry: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000 // 10 minutes (formerly cacheTime)
     }
   }
 })
@@ -20,10 +23,14 @@ export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Suspense fallback={<LoadingSpinner />}>
-          <AppRoutes />
-          <Toaster />
-        </Suspense>
+        <ThemeProvider>
+          <SidebarProvider>
+            <Suspense fallback={<LoadingSpinner fullScreen />}>
+              <AppRoutes />
+              <Toaster />
+            </Suspense>
+          </SidebarProvider>
+        </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
   )

@@ -66,11 +66,11 @@ export default function Register() {
 
       <CardContent className="flex flex-col gap-6">
         <form
-          className="flex flex-col gap-6"
+          className="flex flex-col gap-4"
           onSubmit={handleSubmit(onSubmit)}
         >
           <FormInput
-            label="Nome *"
+            label="Nome completo*"
             type="text"
             error={errors.name?.message}
             {...register('name')}

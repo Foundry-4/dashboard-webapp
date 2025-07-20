@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
-import { PageTitle } from '@/components/common/PageTitle'
+import { RouteTitle } from '@/components/common/RouteTitle'
 import AuthLayout from '@/layouts/AuthLayout'
 import DashboardLayout from '@/layouts/DashboardLayout'
 import { AuthGuard } from '@/middlewares/auth/authGuard'
@@ -25,49 +25,49 @@ export const AppRoutes = () => {
           <Route
             path="/login"
             element={
-              <PageTitle titleKey="login">
+              <RouteTitle titleKey="login">
                 <Login />
-              </PageTitle>
+              </RouteTitle>
             }
           />
           <Route
             path="/register"
             element={
-              <PageTitle titleKey="register">
+              <RouteTitle titleKey="register">
                 <Register />
-              </PageTitle>
+              </RouteTitle>
             }
           />
           <Route
             path="/forgot-password"
             element={
-              <PageTitle titleKey="forgotPassword">
+              <RouteTitle titleKey="forgotPassword">
                 <ForgotPassword />
-              </PageTitle>
+              </RouteTitle>
             }
           />
           <Route
             path="/reset-password"
             element={
-              <PageTitle titleKey="resetPassword">
+              <RouteTitle titleKey="resetPassword">
                 <ResetPassword />
-              </PageTitle>
+              </RouteTitle>
             }
           />
           <Route
             path="/confirm-account"
             element={
-              <PageTitle titleKey="confirmAccount">
+              <RouteTitle titleKey="confirmAccount">
                 <ConfirmAccount />
-              </PageTitle>
+              </RouteTitle>
             }
           />
           <Route
             path="/verify-2fa"
             element={
-              <PageTitle titleKey="verify2FA">
+              <RouteTitle titleKey="verify2FA">
                 <Verify2FA />
-              </PageTitle>
+              </RouteTitle>
             }
           />
         </Route>
@@ -78,9 +78,9 @@ export const AppRoutes = () => {
           <Route
             path="/"
             element={
-              <PageTitle titleKey="dashboard">
+              <RouteTitle titleKey="dashboard">
                 <Dashboard />
-              </PageTitle>
+              </RouteTitle>
             }
           />
           <Route

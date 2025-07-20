@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import {
   useEffect,
   useState,
@@ -46,6 +47,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const queryClient = useQueryClient()
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window === 'undefined') return null
     const user = localStorage.getItem('na-mesa-ja:user')
@@ -78,6 +80,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.removeItem('na-mesa-ja:user')
     // Clear the authorization header from axios
     delete api.defaults.headers.common['Authorization']
+    // Invalidate all queries to clear cached data
+    queryClient.invalidateQueries()
   }
 
   const register = async ({

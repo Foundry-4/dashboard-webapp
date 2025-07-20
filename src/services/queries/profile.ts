@@ -2,13 +2,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
+import { ProfileRefetchKeys } from '@/domain/constants/profile'
+import { deleteAvatar } from '@/services/requests/profile/delete-avatar'
 import { getProfile } from '@/services/requests/profile/get-profile'
 import { update2FA } from '@/services/requests/profile/update-2fa'
+import { updateAvatar } from '@/services/requests/profile/update-avatar'
+import { updateTheme } from '@/services/requests/profile/update-theme'
 
 export const useGetProfile = () => {
   return useQuery({
-    queryKey: ['me-profile'],
-    queryFn: getProfile
+    queryKey: [ProfileRefetchKeys.PROFILE],
+    queryFn: getProfile,
+    enabled: !!JSON.parse(localStorage.getItem('na-mesa-ja:user') || 'null')
+      ?.token
   })
 }
 
@@ -18,14 +24,14 @@ export const useUpdate2FA = () => {
   return useMutation({
     mutationFn: update2FA,
     onMutate: async ({ enabled }) => {
-      // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['me-profile'] })
+      await queryClient.cancelQueries({
+        queryKey: [ProfileRefetchKeys.PROFILE]
+      })
+      const previousProfile = queryClient.getQueryData([
+        ProfileRefetchKeys.PROFILE
+      ])
 
-      // Snapshot the previous value
-      const previousProfile = queryClient.getQueryData(['me-profile'])
-
-      // Optimistically update to the new value
-      queryClient.setQueryData(['me-profile'], (old: unknown) => {
+      queryClient.setQueryData([ProfileRefetchKeys.PROFILE], (old: unknown) => {
         const oldData = old as { twoFactorEnabled?: boolean }
         return {
           ...oldData,
@@ -33,17 +39,17 @@ export const useUpdate2FA = () => {
         }
       })
 
-      // Return a context object with the snapshotted value
       return { previousProfile }
     },
     onSuccess: response => {
-      // Show success message from server response
       toast.success(response.message || '2FA atualizado com sucesso.')
     },
     onError: (error: AxiosError, _, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousProfile) {
-        queryClient.setQueryData(['me-profile'], context.previousProfile)
+        queryClient.setQueryData(
+          [ProfileRefetchKeys.PROFILE],
+          context.previousProfile
+        )
       }
       toast.error(
         (error.response?.data as { message?: string })?.message ||
@@ -51,8 +57,135 @@ export const useUpdate2FA = () => {
       )
     },
     onSettled: () => {
-      // Always refetch after error or success
-      queryClient.invalidateQueries({ queryKey: ['me-profile'] })
+      queryClient.invalidateQueries({ queryKey: [ProfileRefetchKeys.PROFILE] })
+    }
+  })
+}
+
+export const useUpdateTheme = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: updateTheme,
+    onMutate: async ({ darkTheme }) => {
+      await queryClient.cancelQueries({
+        queryKey: [ProfileRefetchKeys.PROFILE]
+      })
+      const previousProfile = queryClient.getQueryData([
+        ProfileRefetchKeys.PROFILE
+      ])
+
+      queryClient.setQueryData([ProfileRefetchKeys.PROFILE], (old: unknown) => {
+        const oldData = old as { darkTheme?: boolean }
+        return {
+          ...oldData,
+          darkTheme
+        }
+      })
+
+      return { previousProfile }
+    },
+    onSuccess: response => {
+      toast.success(response.message || 'Tema atualizado com sucesso.')
+    },
+    onError: (error: AxiosError, _, context) => {
+      if (context?.previousProfile) {
+        queryClient.setQueryData(
+          [ProfileRefetchKeys.PROFILE],
+          context.previousProfile
+        )
+      }
+      toast.error(
+        (error.response?.data as { message?: string })?.message ||
+          'Erro ao atualizar tema. Tente novamente.'
+      )
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [ProfileRefetchKeys.PROFILE] })
+    }
+  })
+}
+
+export const useUpdateAvatar = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: updateAvatar,
+    onMutate: async ({ picture }) => {
+      await queryClient.cancelQueries({
+        queryKey: [ProfileRefetchKeys.PROFILE]
+      })
+      const previousProfile = queryClient.getQueryData([
+        ProfileRefetchKeys.PROFILE
+      ])
+
+      queryClient.setQueryData([ProfileRefetchKeys.PROFILE], (old: unknown) => {
+        const oldData = old as { profilePictureUrl?: string }
+        return {
+          ...oldData,
+          profilePictureUrl: picture
+        }
+      })
+
+      return { previousProfile }
+    },
+    onSuccess: response => {
+      toast.success(
+        response.message || 'Foto de perfil atualizado com sucesso.'
+      )
+    },
+    onError: (error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message ||
+          'Erro ao atualizar avatar. Tente novamente.'
+      )
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [ProfileRefetchKeys.PROFILE] })
+    }
+  })
+}
+
+export const useDeleteAvatar = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: deleteAvatar,
+    onMutate: async () => {
+      await queryClient.cancelQueries({
+        queryKey: [ProfileRefetchKeys.PROFILE]
+      })
+      const previousProfile = queryClient.getQueryData([
+        ProfileRefetchKeys.PROFILE
+      ])
+
+      queryClient.setQueryData([ProfileRefetchKeys.PROFILE], (old: unknown) => {
+        const oldData = old as { profilePictureUrl?: string }
+        return {
+          ...oldData,
+          profilePictureUrl: null
+        }
+      })
+
+      return { previousProfile }
+    },
+    onSuccess: response => {
+      toast.success(response.message || 'Foto de perfil removida com sucesso.')
+    },
+    onError: (error: AxiosError, _, context) => {
+      if (context?.previousProfile) {
+        queryClient.setQueryData(
+          [ProfileRefetchKeys.PROFILE],
+          context.previousProfile
+        )
+      }
+      toast.error(
+        (error.response?.data as { message?: string })?.message ||
+          'Erro ao remover foto de perfil. Tente novamente.'
+      )
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [ProfileRefetchKeys.PROFILE] })
     }
   })
 }
@@ -62,5 +195,8 @@ export const ProfileQueries = {
 }
 
 export const ProfileMutations = {
-  useUpdate2FA
+  useUpdate2FA,
+  useUpdateTheme,
+  useUpdateAvatar,
+  useDeleteAvatar
 }

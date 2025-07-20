@@ -1,7 +1,7 @@
 import { api } from '@/services/api'
 
 interface UpdateThemeParams {
-  darkMode: boolean
+  darkTheme: boolean
 }
 
 export const updateTheme = async (params: UpdateThemeParams) => {

@@ -1,13 +1,7 @@
 import { useAuth } from '@/hooks/useAuth'
-import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function Dashboard() {
   const { user } = useAuth()
-
-  // Set dynamic title with user name
-  useDocumentTitle(`Bem-vindo, ${user?.name || 'Usuário'}!`, {
-    suffix: 'NaMesaJá'
-  })
 
   return (
     <div className="space-y-6">
