@@ -23,7 +23,10 @@ export const TableHeader = memo(
     return (
       <TableHeaderUI>
         {headerGroups.map(headerGroup => (
-          <TableRow key={headerGroup.id}>
+          <TableRow
+            key={headerGroup.id}
+            className="bg-orange-300 hover:bg-orange-300"
+          >
             {headerGroup.headers.map(header => {
               const size = header.getSize()
               const cellStyle = {

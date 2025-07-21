@@ -23,7 +23,17 @@ export const SidebarItem = ({
   const location = useLocation()
 
   const isActive = useMemo(() => {
-    return location.pathname === path
+    if (!path) return false
+
+    if (path === '/') {
+      return location.pathname === '/'
+    }
+
+    const startWithPath = location.pathname.startsWith(path)
+    const samePath = location.pathname === path
+    const isPathEndingWithSlash = location.pathname.charAt(path.length) === '/'
+
+    return startWithPath && (samePath || isPathEndingWithSlash)
   }, [location.pathname, path])
 
   const handleNavigate = useCallback(() => {

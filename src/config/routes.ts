@@ -87,6 +87,20 @@ export const ROUTES: Record<string, RouteConfig> = {
     isPrivate: true,
     isAdminOnly: true
   },
+  createUser: {
+    path: '/users/create-user',
+    title: 'Criar usuário',
+    routeTitle: 'Criar usuário | NaMesaJá',
+    isPrivate: true,
+    isAdminOnly: true
+  },
+  editUser: {
+    path: '/users/edit-user/:userId',
+    title: 'Editar usuário',
+    routeTitle: 'Editar usuário | NaMesaJá',
+    isPrivate: true,
+    isAdminOnly: true
+  },
   roles: {
     path: '/roles',
     title: 'Permissões',

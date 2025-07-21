@@ -170,6 +170,33 @@ button {
     @apply bg-background text-foreground;
   }
 
+  /* Custom scrollbar styles */
+  ::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #e9ecef;
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #dee2e6;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #e9ecef #f8f9fa;
+  }
+
   /* Override browser autofill styles */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,

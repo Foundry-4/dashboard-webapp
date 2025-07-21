@@ -1,3 +1,5 @@
+import { ActionButtons } from './ActionButtons'
+
 import type { User } from '@/domain/interfaces/user'
 import type { ColumnDef } from '@tanstack/react-table'
 
@@ -94,7 +96,7 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'deleted',
     header: 'Deletado',
-    size: 100,
+    size: 150,
     enableSorting: true,
     cell: ({ row }) => {
       const value = row.original.deleted
@@ -103,6 +105,16 @@ export const columns: ColumnDef<User>[] = [
           {value ? 'Sim' : 'Não'}
         </Badge>
       )
+    }
+  },
+  {
+    accessorKey: 'actions',
+    header: 'Ações',
+    size: 100,
+    enableSorting: false,
+    cell: ({ row }) => {
+      const userId = row.original.userId
+      return <ActionButtons userId={userId} />
     }
   }
 ]
