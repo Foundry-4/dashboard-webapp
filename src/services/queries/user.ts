@@ -11,10 +11,11 @@ export const useGetUsers = () => {
   })
 }
 
-export const useGetUserById = (userId: string) => {
+export const useGetUserById = (userId: string, enabled: boolean) => {
   return useQuery({
     queryKey: [UserRefetchKeys.USER, userId],
-    queryFn: () => getUserById(userId)
+    queryFn: () => getUserById(userId),
+    enabled
   })
 }
 

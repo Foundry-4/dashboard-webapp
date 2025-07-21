@@ -5,12 +5,12 @@ import { Sidebar } from '@/layouts/DashboardLayout/Sidebar'
 
 export default function DashboardLayout() {
   return (
-    <div className="flex h-screen w-screen bg-gray-50">
+    <div className="flex h-screen w-screen overflow-hidden bg-gray-50">
       <Sidebar />
 
-      <div className="flex w-full flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <DashboardLayoutHeader />
-        <main className="w-full flex-1 overflow-auto px-6 py-0 pb-6">
+        <main className="w-full flex-1 overflow-hidden px-6 py-0 pb-6">
           <Outlet />
         </main>
       </div>

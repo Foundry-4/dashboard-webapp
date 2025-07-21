@@ -88,7 +88,7 @@ export const AppRoutes = () => {
           <Route
             path="/profile/*"
             element={
-              <Suspense fallback={<LoadingSpinner disableFullScreen />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <ProfileRoutes />
               </Suspense>
             }
@@ -96,7 +96,7 @@ export const AppRoutes = () => {
           <Route
             path="/users/*"
             element={
-              <Suspense fallback={<LoadingSpinner disableFullScreen />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <UserRoutes />
               </Suspense>
             }
@@ -104,7 +104,7 @@ export const AppRoutes = () => {
           <Route
             path="/roles/*"
             element={
-              <Suspense fallback={<LoadingSpinner disableFullScreen />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <RolesRoutes />
               </Suspense>
             }

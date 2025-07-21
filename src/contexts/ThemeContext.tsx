@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect } from 'react'
 
-import { LoadingSpinner } from '@/components/common/LoadingSpinner'
+import { AppLoadingSpinner } from '@/components/common/AppLoadingSpinner'
 import { ProfileMutations, ProfileQueries } from '@/services/queries/profile'
 
 type Theme = 'dark' | 'light'
@@ -42,7 +42,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     setTheme: handleSetTheme
   }
 
-  if (profile.isLoading) return <LoadingSpinner />
+  if (profile.isLoading) return <AppLoadingSpinner />
 
   return (
     <ThemeProviderContext.Provider value={value}>

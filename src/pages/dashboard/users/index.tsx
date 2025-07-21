@@ -1,3 +1,9 @@
+import { UsersTable } from '@/components/users/Table'
+
 export default function Users() {
-  return <div>Users</div>
+  return (
+    <div className="w-full">
+      <UsersTable />
+    </div>
+  )
 }
