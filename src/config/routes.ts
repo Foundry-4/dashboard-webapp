@@ -16,6 +16,7 @@ export interface RouteConfig {
   icon?: LucideIcon
   label?: string
   isPrivate?: boolean
+  isAdminOnly?: boolean
 }
 
 export interface SidebarGroup {
@@ -83,7 +84,8 @@ export const ROUTES: Record<string, RouteConfig> = {
     routeTitle: 'Usuários | NaMesaJá',
     icon: Users,
     label: 'Usuários',
-    isPrivate: true
+    isPrivate: true,
+    isAdminOnly: true
   },
   roles: {
     path: '/roles',
@@ -91,7 +93,8 @@ export const ROUTES: Record<string, RouteConfig> = {
     routeTitle: 'Permissões | NaMesaJá',
     icon: FolderKey,
     label: 'Permissões',
-    isPrivate: true
+    isPrivate: true,
+    isAdminOnly: true
   },
 
   // Static examples just to fill space
@@ -144,4 +147,10 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
 export const getRouteByPath = (path: string): RouteConfig | null => {
   const allRoutes = Object.values(ROUTES)
   return allRoutes.find(route => route.path === path) || null
+}
+
+export const getSidebarGroups = (isAdmin: boolean) => {
+  return SIDEBAR_GROUPS.filter(
+    group => !group.routes.some(route => route.isAdminOnly && !isAdmin)
+  )
 }

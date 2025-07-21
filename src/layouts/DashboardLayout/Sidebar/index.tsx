@@ -10,13 +10,16 @@ import {
   SidebarMenu,
   useSidebar
 } from '@/components/ui/sidebar'
-import { SIDEBAR_GROUPS } from '@/config/routes'
+import { getSidebarGroups } from '@/config/routes'
+import { useIsAdmin } from '@/hooks/isAdmin'
 import { SidebarItem } from '@/layouts/DashboardLayout/Sidebar/Item'
 import { cn } from '@/lib/utils'
 
 export function Sidebar() {
   const navigate = useNavigate()
   const { open } = useSidebar()
+  const isAdmin = useIsAdmin()
+  const sidebarGroups = getSidebarGroups(isAdmin)
 
   return (
     <ShadcnSidebar
@@ -42,7 +45,7 @@ export function Sidebar() {
 
       <SidebarContent className={cn('px-1 pt-18', open && 'px-2')}>
         <SidebarMenu>
-          {SIDEBAR_GROUPS.map((group, groupIndex) => (
+          {sidebarGroups.map((group, groupIndex) => (
             <SidebarGroup
               key={groupIndex}
               className="px-0"
