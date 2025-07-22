@@ -9,3 +9,10 @@ export type ApiResponseWithPagination<T> = ApiResponse<{ data: T }> & {
   page: number
   pageSize: number
 }
+
+export type PaginationParams = {
+  page: number
+  pageSize: number
+  sortBy: string
+  sortDirection: 'asc' | 'desc'
+}

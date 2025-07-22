@@ -1,3 +1,5 @@
+import type { PaginationParams } from './apiResponse'
+
 export interface User {
   userId: number
   name: string
@@ -9,4 +11,9 @@ export interface User {
   blocked: boolean
   twoFactorEnabled: boolean
   deleted: boolean
+}
+
+export interface GetUsersParams extends PaginationParams {
+  search?: string
+  deleted?: boolean
 }
