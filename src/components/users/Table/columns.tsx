@@ -114,7 +114,13 @@ export const columns: ColumnDef<User>[] = [
     enableSorting: false,
     cell: ({ row }) => {
       const userId = row.original.userId
-      return <ActionButtons userId={userId} />
+      const isDeleted = row.original.deleted
+      return (
+        <ActionButtons
+          userId={userId}
+          isDeleted={isDeleted}
+        />
+      )
     }
   }
 ]

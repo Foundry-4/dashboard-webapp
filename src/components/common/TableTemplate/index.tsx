@@ -9,26 +9,26 @@ import {
 } from '@tanstack/react-table'
 import { createElement, useState, type ComponentType } from 'react'
 
-import type { UseQueryResult } from '@tanstack/react-query'
-
 import { TableBody } from '@/components/common/TableTemplate/Body'
 import { TableHeader } from '@/components/common/TableTemplate/Header'
 import { TableSkeleton } from '@/components/common/TableTemplate/Skeleton'
 import { Table } from '@/components/ui/table'
 
 interface TableTemplateProps<T> {
-  query: UseQueryResult<{ data: T[] }>
+  data: T[]
   columns: ColumnDef<T>[]
+  isLoading: boolean
 }
 
 export const TableTemplate = <T,>({
-  query,
-  columns
+  data,
+  columns,
+  isLoading
 }: TableTemplateProps<T>) => {
   const [sorting, setSorting] = useState<SortingState>([])
 
   const table = useReactTable({
-    data: query.data?.data || [],
+    data: data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -37,6 +37,8 @@ export const TableTemplate = <T,>({
       sorting
     }
   })
+
+  const rows = table.getRowModel().rows
 
   const headerComponent = createElement(
     TableHeader as ComponentType<{
@@ -49,26 +51,22 @@ export const TableTemplate = <T,>({
     }
   )
 
-  if (query.isLoading) {
-    return (
-      <TableSkeleton
-        columnCount={columns.length}
-        headerComponent={headerComponent}
-      />
-    )
-  }
-
-  const rows = table.getRowModel().rows
-
   return (
     <div className="w-full overflow-x-auto rounded-md border">
       <div className="min-w-full">
-        <Table>
-          {headerComponent}
-          {createElement(TableBody as ComponentType<{ rows: Row<T>[] }>, {
-            rows: rows
-          })}
-        </Table>
+        {isLoading ? (
+          <TableSkeleton
+            columnCount={columns.length}
+            headerComponent={headerComponent}
+          />
+        ) : (
+          <Table>
+            {headerComponent}
+            {createElement(TableBody as ComponentType<{ rows: Row<T>[] }>, {
+              rows: rows
+            })}
+          </Table>
+        )}
       </div>
     </div>
   )

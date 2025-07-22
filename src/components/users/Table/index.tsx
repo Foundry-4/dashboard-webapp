@@ -25,7 +25,8 @@ export const UsersTable = () => {
         Criar usuário
       </Button>
       <TableTemplate<User>
-        query={users}
+        data={users.data?.data?.data || []}
+        isLoading={users.isLoading}
         columns={columns}
       />
     </div>
