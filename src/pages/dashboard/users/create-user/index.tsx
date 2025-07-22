@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
 
 import type z from 'zod'
 
@@ -17,8 +16,6 @@ import { UserMutations } from '@/services/queries/user'
 type CreateUserFormData = z.infer<typeof createUserSchema>
 
 export default function CreateUser() {
-  const navigate = useNavigate()
-
   const roles = RoleQueries.useGetRoles()
   const createUser = UserMutations.useCreateUser()
 
@@ -51,7 +48,6 @@ export default function CreateUser() {
         roleOptions.find(option => option.label === data.roleId)?.value ?? 0
     })
     if (response.status) {
-      navigate('/users')
       reset()
     }
   }
