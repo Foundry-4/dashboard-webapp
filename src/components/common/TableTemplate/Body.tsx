@@ -1,6 +1,6 @@
 import { flexRender, type Row } from '@tanstack/react-table'
-import { memo } from 'react'
 
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   TableBody as TableBodyUI,
   TableCell,
@@ -13,7 +13,7 @@ interface TableBodyProps<T> {
   fixedRows?: number
 }
 
-export const TableBody = memo(<T,>({ rows, fixedRows }: TableBodyProps<T>) => {
+export const TableBody = <T,>({ rows, fixedRows }: TableBodyProps<T>) => {
   const emptyRowsCount =
     fixedRows && rows.length < fixedRows ? fixedRows - rows.length : 0
   const cellsPerRow = rows[0]?.getVisibleCells().length ?? 1
@@ -27,6 +27,23 @@ export const TableBody = memo(<T,>({ rows, fixedRows }: TableBodyProps<T>) => {
           className={cn('bg-input/10', idx % 2 === 0 && 'bg-white')}
         >
           {row.getVisibleCells().map(cell => {
+            if (cell.column.id === 'select') {
+              return (
+                <TableCell
+                  key={cell.id}
+                  className="truncate px-4"
+                >
+                  <Checkbox
+                    checked={row.getIsSelected()}
+                    indeterminate={
+                      row.getIsSomeSelected() && !row.getIsSelected()
+                    }
+                    onCheckedChange={value => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                  />
+                </TableCell>
+              )
+            }
             const cellContent = flexRender(
               cell.column.columnDef.cell,
               cell.getContext()
@@ -64,6 +81,6 @@ export const TableBody = memo(<T,>({ rows, fixedRows }: TableBodyProps<T>) => {
       ))}
     </TableBodyUI>
   )
-})
+}
 
 TableBody.displayName = 'TableBody'

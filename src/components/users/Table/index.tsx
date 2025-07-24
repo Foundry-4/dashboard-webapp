@@ -1,3 +1,5 @@
+import { useCallback, useState } from 'react'
+
 import type { User } from '@/domain/interfaces/user'
 
 import { TableTemplate } from '@/components/common/TableTemplate/index'
@@ -34,6 +36,16 @@ export const UsersTable = () => {
     setPageSize(newPageSize)
   }
 
+  const [rowSelection, setRowSelection] = useState<string[]>([])
+
+  const handleRowSelectionChange = useCallback((newSelection: string[]) => {
+    console.log(newSelection)
+    setRowSelection(newSelection)
+    // You can also get the selected row IDs as an array here:
+    // const selectedIds = Object.keys(newSelection).filter(id => newSelection[id])
+    // Do something with selectedIds if needed
+  }, [])
+
   return (
     <TableTemplate<User>
       data={users?.data?.data || []}
@@ -45,11 +57,14 @@ export const UsersTable = () => {
         totalItems: users?.data?.totalItems || 0,
         totalPages: users?.data?.totalPages || 1,
         pageSize: pageSize,
-        onPageChange: handlePageChange,
         showPagination: true,
         pageSizeOptions: [10, 20, 50, 100],
+        onPageChange: handlePageChange,
         onPageSizeChange: handlePageSizeChange
       }}
+      rowSelection={rowSelection}
+      onRowSelectionChange={handleRowSelectionChange}
+      getRowId={row => row.userId?.toString()}
     />
   )
 }
