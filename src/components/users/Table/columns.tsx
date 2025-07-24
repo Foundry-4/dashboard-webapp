@@ -87,7 +87,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const value = row.original.twoFactorEnabled
       return (
-        <Badge variant={value ? 'outline' : 'destructive'}>
+        <Badge variant={value ? 'primary' : 'gray'}>
           {value ? 'Habilitado' : 'Desabilitado'}
         </Badge>
       )

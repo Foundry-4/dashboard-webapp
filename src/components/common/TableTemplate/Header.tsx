@@ -21,7 +21,7 @@ export interface TableHeaderProps<T> {
 export const TableHeader = memo(
   <T,>({ headerGroups, sorting }: TableHeaderProps<T>) => {
     return (
-      <TableHeaderUI>
+      <TableHeaderUI className="!mx-2">
         {headerGroups.map(headerGroup => (
           <TableRow
             key={headerGroup.id}
@@ -48,7 +48,7 @@ export const TableHeader = memo(
               return (
                 <TableHead
                   key={header.id}
-                  className="font-bold"
+                  className="px-4 font-bold"
                   style={cellStyle}
                 >
                   {header.isPlaceholder ? null : (

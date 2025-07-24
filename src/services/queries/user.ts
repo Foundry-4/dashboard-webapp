@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import type { ApiResponseWithPagination } from '@/domain/interfaces/apiResponse'
-import type { User } from '@/domain/interfaces/user'
+import type { GetUsersParams, User } from '@/domain/interfaces/user'
 import type { AxiosError } from 'axios'
 
 import { UserRefetchKeys } from '@/domain/constants/user'
@@ -12,10 +12,10 @@ import { getUsers } from '@/services/requests/user/get-users'
 import { moveUserToTrash } from '@/services/requests/user/move-user-to-trash'
 import { restoreUserFromTrash } from '@/services/requests/user/restore-user-from-trash'
 
-export const useGetUsers = () => {
+export const useGetUsers = (params?: GetUsersParams) => {
   return useQuery({
-    queryKey: [UserRefetchKeys.USERS],
-    queryFn: getUsers
+    queryKey: [UserRefetchKeys.USERS, params],
+    queryFn: () => getUsers(params)
   })
 }
 

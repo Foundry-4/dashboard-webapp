@@ -4,8 +4,17 @@ export interface ApiResponse<T> {
   status: boolean
 }
 
-export type ApiResponseWithPagination<T> = ApiResponse<{ data: T }> & {
+export type ApiResponseWithPagination<T> = ApiResponse<{
+  data: T
   totalItems: number
   page: number
   pageSize: number
+  totalPages: number
+}>
+
+export type PaginationParams = {
+  page: number
+  pageSize: number
+  sortBy: string
+  sortDirection: 'asc' | 'desc'
 }
