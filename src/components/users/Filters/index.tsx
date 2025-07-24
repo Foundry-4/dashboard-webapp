@@ -1,7 +1,6 @@
-import { TrashIcon } from 'lucide-react'
+import { SearchIcon, TrashIcon } from 'lucide-react'
 
-import { Button } from '../../ui/button'
-
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch'
 import { useUsersFilterStore } from '@/stores/usersFilterStore'
@@ -31,9 +30,11 @@ export const UsersFilters = () => {
 
       <Input
         placeholder="Pesquisar usuário"
-        className="ml-auto h-8 max-w-xs"
+        className="h-8"
+        containerClassName="max-w-[220px]"
         value={searchInput}
         onChange={handleSearchChange}
+        rightIcon={<SearchIcon className="h-4 w-4" />}
       />
     </div>
   )

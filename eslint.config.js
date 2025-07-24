@@ -25,6 +25,7 @@ export default tseslint.config([
     },
     rules: {
       'prettier/prettier': 'error',
+      'react-refresh/only-export-components': 'off',
       '@typescript-eslint/no-unused-vars': 'error',
       'no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',

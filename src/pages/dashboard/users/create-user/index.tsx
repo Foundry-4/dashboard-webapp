@@ -34,7 +34,7 @@ export default function CreateUser() {
 
   const roleOptions = useMemo(
     () =>
-      roles?.data?.data?.map(role => ({
+      roles?.data?.data?.data?.map(role => ({
         value: role.roleId,
         label: role.name
       })) ?? [],

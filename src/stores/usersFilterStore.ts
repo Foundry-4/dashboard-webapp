@@ -23,8 +23,8 @@ export const useUsersFilterStore = create<UsersFilterState>(set => ({
   pageSize: 10,
   sortBy: 'createdAt',
   sortDirection: 'desc',
-  setDeleted: deleted => set({ deleted }),
-  setSearch: search => set({ search }),
+  setDeleted: deleted => set({ deleted, page: 1 }), // Reset to page 1 when filter changes
+  setSearch: search => set({ search, page: 1 }), // Reset to page 1 when search changes
   setPage: page => set({ page }),
   setPageSize: pageSize => set({ pageSize }),
   setSortBy: sortBy => set({ sortBy }),

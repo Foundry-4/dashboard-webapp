@@ -13,7 +13,7 @@ export const TableSkeleton = ({
   headerComponent
 }: TableSkeletonProps) => {
   return (
-    <div className="scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 w-full overflow-x-auto rounded-md border">
+    <div className="scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 w-full overflow-x-auto">
       <div className="min-w-full">
         <Table>
           {headerComponent}
