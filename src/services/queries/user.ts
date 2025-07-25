@@ -52,7 +52,7 @@ export const useMoveUserToTrash = () => {
 
   return useMutation({
     mutationFn: moveUserToTrash,
-    onMutate: async (userId: number) => {
+    onMutate: async (userIds: number[]) => {
       await queryClient.cancelQueries({ queryKey: [UserRefetchKeys.USERS] })
       const previousUsers = queryClient.getQueryData<
         ApiResponseWithPagination<User[]>
@@ -65,7 +65,9 @@ export const useMoveUserToTrash = () => {
             data: {
               ...previousUsers.data,
               data: previousUsers.data.data.map(user =>
-                user.userId === userId ? { ...user, deleted: true } : user
+                userIds.includes(user.userId)
+                  ? { ...user, deleted: true }
+                  : user
               )
             }
           }
@@ -96,7 +98,7 @@ export const useRestoreUserFromTrash = () => {
 
   return useMutation({
     mutationFn: restoreUserFromTrash,
-    onMutate: async (userId: number) => {
+    onMutate: async (userIds: number[]) => {
       await queryClient.cancelQueries({ queryKey: [UserRefetchKeys.USERS] })
       const previousUsers = queryClient.getQueryData<
         ApiResponseWithPagination<User[]>
@@ -109,7 +111,9 @@ export const useRestoreUserFromTrash = () => {
             data: {
               ...previousUsers.data,
               data: previousUsers.data.data.map(user =>
-                user.userId === userId ? { ...user, deleted: false } : user
+                userIds.includes(user.userId)
+                  ? { ...user, deleted: false }
+                  : user
               )
             }
           }

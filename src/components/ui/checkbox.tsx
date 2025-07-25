@@ -6,11 +6,28 @@ import { cn } from '@/lib/utils'
 
 function Checkbox({
   className,
+  indeterminate,
   ...props
-}: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
+}: React.ComponentProps<typeof CheckboxPrimitive.Root> & {
+  indeterminate?: boolean
+}) {
+  // Set indeterminate on the native input if present
+  const ref = React.useRef<HTMLButtonElement>(null)
+  React.useEffect(() => {
+    if (ref.current) {
+      const input = ref.current.querySelector(
+        'input[type="checkbox"]'
+      ) as HTMLInputElement | null
+      if (input) {
+        input.indeterminate = !!indeterminate
+      }
+    }
+  }, [indeterminate])
+
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
+      ref={ref}
       className={cn(
         // Use orange for checked, gray for unchecked
         'peer border-2 !border-gray-300 bg-white data-[state=checked]:border-orange-500 data-[state=checked]:bg-orange-400 data-[state=checked]:text-black',

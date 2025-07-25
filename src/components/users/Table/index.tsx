@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import type { User } from '@/domain/interfaces/user'
 
@@ -18,6 +18,7 @@ export const UsersTable = () => {
     setPage,
     setPageSize
   } = useUsersFilterStore()
+  const [rowSelection, setRowSelection] = useState<string[]>([])
 
   const { data: users, isLoading } = UserQueries.useGetUsers({
     deleted,
@@ -28,23 +29,34 @@ export const UsersTable = () => {
     sortDirection
   })
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage)
-  }
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      setPage(newPage)
+    },
+    [setPage]
+  )
 
-  const handlePageSizeChange = (newPageSize: number) => {
-    setPageSize(newPageSize)
-  }
-
-  const [rowSelection, setRowSelection] = useState<string[]>([])
+  const handlePageSizeChange = useCallback(
+    (newPageSize: number) => setPageSize(newPageSize),
+    [setPageSize]
+  )
 
   const handleRowSelectionChange = useCallback((newSelection: string[]) => {
-    console.log(newSelection)
     setRowSelection(newSelection)
-    // You can also get the selected row IDs as an array here:
-    // const selectedIds = Object.keys(newSelection).filter(id => newSelection[id])
-    // Do something with selectedIds if needed
   }, [])
+
+  const pagination = useMemo(() => {
+    return {
+      currentPage: page,
+      totalItems: users?.data?.totalItems || 0,
+      totalPages: users?.data?.totalPages || 1,
+      pageSize: pageSize,
+      showPagination: true,
+      pageSizeOptions: [10, 20, 50, 100],
+      onPageChange: handlePageChange,
+      onPageSizeChange: handlePageSizeChange
+    }
+  }, [page, pageSize, users, handlePageChange, handlePageSizeChange])
 
   return (
     <TableTemplate<User>
@@ -52,16 +64,8 @@ export const UsersTable = () => {
       isLoading={isLoading}
       columns={columns}
       fixedRows={10}
-      pagination={{
-        currentPage: page,
-        totalItems: users?.data?.totalItems || 0,
-        totalPages: users?.data?.totalPages || 1,
-        pageSize: pageSize,
-        showPagination: true,
-        pageSizeOptions: [10, 20, 50, 100],
-        onPageChange: handlePageChange,
-        onPageSizeChange: handlePageSizeChange
-      }}
+      pagination={pagination}
+      deleted={deleted}
       rowSelection={rowSelection}
       onRowSelectionChange={handleRowSelectionChange}
       getRowId={row => row.userId?.toString()}

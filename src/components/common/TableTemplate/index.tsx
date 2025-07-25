@@ -11,9 +11,21 @@ import { useCallback, useMemo, useState } from 'react'
 import { TableBody } from '@/components/common/TableTemplate/Body'
 import { EmptyState } from '@/components/common/TableTemplate/EmptyState'
 import { TableHeader } from '@/components/common/TableTemplate/Header'
+import { MultipleRowSelectionActionArea } from '@/components/common/TableTemplate/MultipleRowSelectionActionArea'
 import { TablePagination } from '@/components/common/TableTemplate/Pagination'
 import { TableSkeleton } from '@/components/common/TableTemplate/Skeleton'
 import { Table } from '@/components/ui/table'
+
+interface Pagination {
+  currentPage?: number
+  totalItems?: number
+  totalPages?: number
+  pageSize?: number
+  showPagination?: boolean
+  pageSizeOptions?: number[]
+  onPageChange?: (page: number) => void
+  onPageSizeChange?: (size: number) => void
+}
 
 interface TableTemplateProps<T> {
   data: T[]
@@ -21,16 +33,8 @@ interface TableTemplateProps<T> {
   isLoading: boolean
   fixedRows?: number
   rowSelection?: string[]
-  pagination?: {
-    currentPage?: number
-    totalItems?: number
-    totalPages?: number
-    pageSize?: number
-    showPagination?: boolean
-    pageSizeOptions?: number[]
-    onPageChange?: (page: number) => void
-    onPageSizeChange?: (size: number) => void
-  }
+  deleted?: boolean
+  pagination?: Pagination
   getRowId?: (row: T) => string
   onRowSelectionChange?: (rowSelection: string[]) => void
 }
@@ -45,7 +49,8 @@ export const TableTemplate = <
   pagination,
   rowSelection,
   onRowSelectionChange,
-  getRowId
+  getRowId,
+  deleted
 }: TableTemplateProps<T>) => {
   const [sorting, setSorting] = useState<SortingState>([])
 
@@ -110,6 +115,7 @@ export const TableTemplate = <
     onRowSelectionChange: handleRowSelectionChange
   })
 
+  const selectedRows = table.getSelectedRowModel().rows
   const rows = table.getRowModel().rows
 
   const handlePageSizeChange = useCallback(
@@ -161,46 +167,54 @@ export const TableTemplate = <
       : undefined
 
     return (
-      <>
-        <Table containerStyle={containerStyle}>
-          {headerComponent}
-          {tableBodyComponent}
-        </Table>
-        {showPagination && onPageChange && rows.length > 0 && (
-          <div className="bg-muted/50 border-t">
-            <TablePagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
-              onPageChange={onPageChange}
-              pageSizeOptions={pageSizeOptions}
-              onPageSizeChange={handlePageSizeChange}
-            />
-          </div>
-        )}
-      </>
+      <div className="flex flex-col gap-4">
+        {selectedRows.length ? (
+          <MultipleRowSelectionActionArea
+            userIds={selectedRows.map(row => Number(getRowId?.(row.original)))}
+            deleted={deleted}
+          />
+        ) : null}
+
+        <div className="overflow-x-auto rounded-sm border">
+          <Table containerStyle={containerStyle}>
+            {headerComponent}
+            {tableBodyComponent}
+          </Table>
+          {showPagination && onPageChange && rows.length > 0 && (
+            <div className="bg-muted/50 border-t">
+              <TablePagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={onPageChange}
+                pageSizeOptions={pageSizeOptions}
+                onPageSizeChange={handlePageSizeChange}
+              />
+            </div>
+          )}
+        </div>
+      </div>
     )
   }, [
-    isLoading,
-    columns.length,
-    fixedRows,
     showPagination,
-    onPageChange,
     currentPage,
     totalPages,
     totalItems,
     pageSize,
     pageSizeOptions,
-    handlePageSizeChange,
+    selectedRows,
     rows,
     sorting,
-    table
+    table,
+    isLoading,
+    columns.length,
+    fixedRows,
+    deleted,
+    onPageChange,
+    getRowId,
+    handlePageSizeChange
   ])
 
-  return (
-    <div className="w-full overflow-x-auto rounded-sm border">
-      <div className="min-w-full">{tableContent}</div>
-    </div>
-  )
+  return <div className="w-full">{tableContent}</div>
 }

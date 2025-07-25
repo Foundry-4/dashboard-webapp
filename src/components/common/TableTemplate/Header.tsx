@@ -60,6 +60,10 @@ export const TableHeader = <T,>({
                 >
                   <Checkbox
                     checked={table.getIsAllPageRowsSelected()}
+                    indeterminate={
+                      !table.getIsAllPageRowsSelected() &&
+                      table.getIsSomePageRowsSelected()
+                    }
                     onCheckedChange={value =>
                       table.toggleAllPageRowsSelected(!!value)
                     }
