@@ -1,3 +1,5 @@
+import { useCallback, useMemo, useState } from 'react'
+
 import type { User } from '@/domain/interfaces/user'
 
 import { TableTemplate } from '@/components/common/TableTemplate/index'
@@ -16,6 +18,7 @@ export const UsersTable = () => {
     setPage,
     setPageSize
   } = useUsersFilterStore()
+  const [rowSelection, setRowSelection] = useState<string[]>([])
 
   const { data: users, isLoading } = UserQueries.useGetUsers({
     deleted,
@@ -26,13 +29,34 @@ export const UsersTable = () => {
     sortDirection
   })
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage)
-  }
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      setPage(newPage)
+    },
+    [setPage]
+  )
 
-  const handlePageSizeChange = (newPageSize: number) => {
-    setPageSize(newPageSize)
-  }
+  const handlePageSizeChange = useCallback(
+    (newPageSize: number) => setPageSize(newPageSize),
+    [setPageSize]
+  )
+
+  const handleRowSelectionChange = useCallback((newSelection: string[]) => {
+    setRowSelection(newSelection)
+  }, [])
+
+  const pagination = useMemo(() => {
+    return {
+      currentPage: page,
+      totalItems: users?.data?.totalItems || 0,
+      totalPages: users?.data?.totalPages || 1,
+      pageSize: pageSize,
+      showPagination: true,
+      pageSizeOptions: [10, 20, 50, 100],
+      onPageChange: handlePageChange,
+      onPageSizeChange: handlePageSizeChange
+    }
+  }, [page, pageSize, users, handlePageChange, handlePageSizeChange])
 
   return (
     <TableTemplate<User>
@@ -40,16 +64,11 @@ export const UsersTable = () => {
       isLoading={isLoading}
       columns={columns}
       fixedRows={10}
-      pagination={{
-        currentPage: page,
-        totalItems: users?.data?.totalItems || 0,
-        totalPages: users?.data?.totalPages || 1,
-        pageSize: pageSize,
-        onPageChange: handlePageChange,
-        showPagination: true,
-        pageSizeOptions: [10, 20, 50, 100],
-        onPageSizeChange: handlePageSizeChange
-      }}
+      pagination={pagination}
+      deleted={deleted}
+      rowSelection={rowSelection}
+      onRowSelectionChange={handleRowSelectionChange}
+      getRowId={row => row.userId?.toString()}
     />
   )
 }

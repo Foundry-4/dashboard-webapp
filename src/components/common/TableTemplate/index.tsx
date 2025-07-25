@@ -3,48 +3,54 @@ import {
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
-  type HeaderGroup,
-  type Row,
+  type RowSelectionState,
   type SortingState
 } from '@tanstack/react-table'
-import {
-  createElement,
-  useCallback,
-  useMemo,
-  useState,
-  type ComponentType
-} from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { TableBody } from '@/components/common/TableTemplate/Body'
 import { EmptyState } from '@/components/common/TableTemplate/EmptyState'
 import { TableHeader } from '@/components/common/TableTemplate/Header'
+import { MultipleRowSelectionActionArea } from '@/components/common/TableTemplate/MultipleRowSelectionActionArea'
 import { TablePagination } from '@/components/common/TableTemplate/Pagination'
 import { TableSkeleton } from '@/components/common/TableTemplate/Skeleton'
 import { Table } from '@/components/ui/table'
+
+interface Pagination {
+  currentPage?: number
+  totalItems?: number
+  totalPages?: number
+  pageSize?: number
+  showPagination?: boolean
+  pageSizeOptions?: number[]
+  onPageChange?: (page: number) => void
+  onPageSizeChange?: (size: number) => void
+}
 
 interface TableTemplateProps<T> {
   data: T[]
   columns: ColumnDef<T>[]
   isLoading: boolean
   fixedRows?: number
-  pagination?: {
-    currentPage?: number
-    totalItems?: number
-    totalPages?: number
-    pageSize?: number
-    showPagination?: boolean
-    pageSizeOptions?: number[]
-    onPageChange?: (page: number) => void
-    onPageSizeChange?: (size: number) => void
-  }
+  rowSelection?: string[]
+  deleted?: boolean
+  pagination?: Pagination
+  getRowId?: (row: T) => string
+  onRowSelectionChange?: (rowSelection: string[]) => void
 }
 
-export const TableTemplate = <T,>({
+export const TableTemplate = <
+  T extends { userId?: string | number; id?: string | number }
+>({
   data,
   columns,
   isLoading,
   fixedRows = 10,
-  pagination
+  pagination,
+  rowSelection,
+  onRowSelectionChange,
+  getRowId,
+  deleted
 }: TableTemplateProps<T>) => {
   const [sorting, setSorting] = useState<SortingState>([])
 
@@ -59,17 +65,57 @@ export const TableTemplate = <T,>({
     onPageSizeChange
   } = pagination || {}
 
+  const rowSelectionState = useMemo(() => {
+    return (
+      rowSelection?.reduce((acc, id) => {
+        acc[id] = true
+        return acc
+      }, {} as RowSelectionState) || {}
+    )
+  }, [rowSelection])
+
+  const selectColumn: ColumnDef<T> = {
+    id: 'select',
+    size: 48,
+    enableSorting: false,
+    enableColumnFilter: false,
+    meta: { isSelection: true }
+  }
+
+  const handleRowSelectionChange = useCallback(
+    (
+      updaterOrValue:
+        | RowSelectionState
+        | ((rowSelection: RowSelectionState) => RowSelectionState)
+    ) => {
+      const newSelection =
+        typeof updaterOrValue === 'function'
+          ? updaterOrValue(rowSelectionState)
+          : updaterOrValue
+      const value = Object.keys(newSelection).filter(
+        key => newSelection[key] === true
+      )
+      onRowSelectionChange?.(value)
+    },
+    [onRowSelectionChange, rowSelectionState]
+  )
+
   const table = useReactTable({
     data: data || [],
-    columns,
+    columns: [selectColumn, ...columns],
+    state: {
+      sorting,
+      rowSelection: rowSelectionState
+    },
+    enableMultiRowSelection: true,
+    getRowId,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
-    state: {
-      sorting
-    }
+    onRowSelectionChange: handleRowSelectionChange
   })
 
+  const selectedRows = table.getSelectedRowModel().rows
   const rows = table.getRowModel().rows
 
   const handlePageSizeChange = useCallback(
@@ -80,37 +126,22 @@ export const TableTemplate = <T,>({
     [onPageChange, onPageSizeChange]
   )
 
-  const headerComponent = useMemo(
-    () =>
-      createElement(
-        TableHeader as ComponentType<{
-          headerGroups: HeaderGroup<T>[]
-          sorting: SortingState
-        }>,
-        {
-          headerGroups: table.getHeaderGroups(),
-          sorting
-        }
-      ),
-    [table, sorting]
-  )
-
-  const tableBodyComponent = useMemo(
-    () =>
-      createElement(
-        TableBody as ComponentType<{
-          rows: Row<T>[]
-          fixedRows?: number
-        }>,
-        {
-          rows,
-          fixedRows
-        }
-      ),
-    [rows, fixedRows]
-  )
-
   const tableContent = useMemo(() => {
+    const headerComponent = (
+      <TableHeader<T>
+        headerGroups={table.getHeaderGroups()}
+        sorting={sorting}
+        table={table}
+      />
+    )
+
+    const tableBodyComponent = (
+      <TableBody<T>
+        rows={rows}
+        fixedRows={fixedRows}
+      />
+    )
+
     if (isLoading) {
       return (
         <TableSkeleton
@@ -120,57 +151,70 @@ export const TableTemplate = <T,>({
         />
       )
     }
+
     if (!rows.length) {
       return <EmptyState />
     }
+
+    const height = fixedRows ? fixedRows * 49 + 40 + 12 : 500
+
     const containerStyle = fixedRows
       ? {
-          height: `${fixedRows * 49 + 40}px`,
-          maxHeight: `${fixedRows * 49 + 40}px !important`,
+          height: `${height}px`,
+          maxHeight: `${height}px !important`,
           overflowY: 'auto' as const
         }
       : undefined
+
     return (
-      <>
-        <Table containerStyle={containerStyle}>
-          {headerComponent}
-          {tableBodyComponent}
-        </Table>
-        {showPagination && onPageChange && rows.length > 0 && (
-          <div className="bg-muted/50 border-t">
-            <TablePagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
-              onPageChange={onPageChange}
-              pageSizeOptions={pageSizeOptions}
-              onPageSizeChange={handlePageSizeChange}
-            />
-          </div>
-        )}
-      </>
+      <div className="flex flex-col gap-4">
+        {selectedRows.length ? (
+          <MultipleRowSelectionActionArea
+            userIds={selectedRows.map(row => Number(getRowId?.(row.original)))}
+            deleted={deleted}
+          />
+        ) : null}
+
+        <div className="overflow-x-auto rounded-sm border">
+          <Table containerStyle={containerStyle}>
+            {headerComponent}
+            {tableBodyComponent}
+          </Table>
+          {showPagination && onPageChange && rows.length > 0 && (
+            <div className="bg-muted/50 border-t">
+              <TablePagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={onPageChange}
+                pageSizeOptions={pageSizeOptions}
+                onPageSizeChange={handlePageSizeChange}
+              />
+            </div>
+          )}
+        </div>
+      </div>
     )
   }, [
-    isLoading,
-    columns.length,
-    fixedRows,
-    headerComponent,
-    tableBodyComponent,
     showPagination,
-    onPageChange,
-    rows.length,
     currentPage,
     totalPages,
     totalItems,
     pageSize,
     pageSizeOptions,
+    selectedRows,
+    rows,
+    sorting,
+    table,
+    isLoading,
+    columns.length,
+    fixedRows,
+    deleted,
+    onPageChange,
+    getRowId,
     handlePageSizeChange
   ])
 
-  return (
-    <div className="w-full overflow-x-auto rounded-sm border">
-      <div className="min-w-full">{tableContent}</div>
-    </div>
-  )
+  return <div className="w-full">{tableContent}</div>
 }

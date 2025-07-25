@@ -59,7 +59,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const value = row.original.accountConfirmed
       return (
-        <Badge variant={value === 'S' ? 'outline' : 'destructive'}>
+        <Badge variant={value === 'S' ? 'primary' : 'gray'}>
           {value === 'S' ? 'Sim' : 'Não'}
         </Badge>
       )
@@ -73,7 +73,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const value = row.original.blocked
       return (
-        <Badge variant={value ? 'destructive' : 'outline'}>
+        <Badge variant={value ? 'destructive' : 'primary'}>
           {value ? 'Sim' : 'Não'}
         </Badge>
       )
@@ -101,7 +101,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const value = row.original.deleted
       return (
-        <Badge variant={value ? 'destructive' : 'outline'}>
+        <Badge variant={value ? 'destructive' : 'primary'}>
           {value ? 'Sim' : 'Não'}
         </Badge>
       )

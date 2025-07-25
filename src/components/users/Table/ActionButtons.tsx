@@ -1,4 +1,4 @@
-import { PencilIcon, TrashIcon } from 'lucide-react'
+import { ArchiveRestore, PencilIcon, TrashIcon } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -16,11 +16,11 @@ export const ActionButtons = ({ userId, isDeleted }: ActionButtonsProps) => {
   const restoreUserFromTrash = UserMutations.useRestoreUserFromTrash()
 
   const handleMoveUserToTrash = useCallback(() => {
-    moveUserToTrash.mutate(userId)
+    moveUserToTrash.mutate([userId])
   }, [moveUserToTrash, userId])
 
   const handleRestoreUserFromTrash = useCallback(() => {
-    restoreUserFromTrash.mutate(userId)
+    restoreUserFromTrash.mutate([userId])
   }, [restoreUserFromTrash, userId])
 
   const isDeletedCase = useMemo(() => {
@@ -28,13 +28,15 @@ export const ActionButtons = ({ userId, isDeleted }: ActionButtonsProps) => {
       return {
         onClick: handleRestoreUserFromTrash,
         label: 'Restaurar',
-        icon: <TrashIcon className="h-4 w-4" />
+        variant: 'restore',
+        icon: <ArchiveRestore className="h-4 w-4" />
       }
     }
 
     return {
       onClick: handleMoveUserToTrash,
       label: 'Mover para lixeira',
+      variant: 'destructive',
       icon: <TrashIcon className="h-4 w-4" />
     }
   }, [isDeleted, handleMoveUserToTrash, handleRestoreUserFromTrash])
@@ -50,7 +52,7 @@ export const ActionButtons = ({ userId, isDeleted }: ActionButtonsProps) => {
         Editar
       </Button>
       <Button
-        variant="destructive"
+        variant={isDeleted ? 'restore' : 'destructive'}
         size="sm"
         onClick={isDeletedCase.onClick}
       >
