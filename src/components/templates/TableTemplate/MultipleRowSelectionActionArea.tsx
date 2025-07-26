@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { UserMutations } from '@/services/queries/user'
+import { useModalStore } from '@/stores/useModalStore'
 
 interface MultipleRowSelectionActionAreaProps {
   userIds: number[]
@@ -16,6 +17,7 @@ export function MultipleRowSelectionActionArea({
   const moveUserToTrash = UserMutations.useMoveUserToTrash()
   const restoreUserFromTrash = UserMutations.useRestoreUserFromTrash()
   const deleteUser = UserMutations.useDeleteUser()
+  const { openModal } = useModalStore()
 
   const userIdsLength = useMemo(() => userIds.length, [userIds])
 
@@ -28,8 +30,16 @@ export function MultipleRowSelectionActionArea({
   }, [restoreUserFromTrash, userIds])
 
   const handleDeleteUser = useCallback(() => {
-    deleteUser.mutate(userIds)
-  }, [deleteUser, userIds])
+    const itemText = userIdsLength === 1 ? 'usuário' : 'usuários'
+    openModal({
+      title: 'Confirmar exclusão',
+      message: `Tem certeza que deseja excluir ${userIdsLength} ${itemText}? Esta ação não pode ser desfeita.`,
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      onConfirm: () => deleteUser.mutate(userIds),
+      isDestructive: true
+    })
+  }, [deleteUser, userIds, userIdsLength, openModal])
 
   const selectedItemsTitle = useMemo(() => {
     if (userIdsLength === 1) {

@@ -22,6 +22,9 @@ interface ModalTemplateProps {
   extraModalActions?: React.ReactNode
   isSubmitting?: boolean
   disableConfirm?: boolean
+  titleIcon?: React.ReactNode
+  confirmText?: string
+  cancelText?: string
   onClose: () => void
   onConfirm: () => void
   onOpenChange: (open: boolean) => void
@@ -35,6 +38,9 @@ export const ModalTemplate = ({
   trigger,
   extraModalActions,
   isSubmitting,
+  titleIcon,
+  confirmText,
+  cancelText,
   onClose,
   onConfirm,
   onOpenChange,
@@ -49,7 +55,10 @@ export const ModalTemplate = ({
 
       <DialogContent className="rounded-sm px-0 py-4">
         <DialogHeader className="px-4 pb-2">
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            {titleIcon}
+            {title}
+          </DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
 
@@ -65,7 +74,7 @@ export const ModalTemplate = ({
             size="sm"
             onClick={onClose}
           >
-            Cancelar
+            {cancelText || 'Cancelar'}
           </Button>
           <Button
             size="sm"
@@ -73,7 +82,7 @@ export const ModalTemplate = ({
             disabled={isSubmitting || disableConfirm}
             className="relative"
           >
-            Salvar
+            {confirmText || 'Confirmar'}
             {isSubmitting && (
               <Loader2 className="absolute left-[calc(50%-8px)] h-4 w-4 animate-spin" />
             )}

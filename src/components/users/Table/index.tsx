@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 import type { User } from '@/domain/interfaces/user'
 
-import { TableTemplate } from '@/components/common/TableTemplate/index'
+import { TableTemplate } from '@/components/templates/TableTemplate'
 import { columns } from '@/components/users/Table/columns'
 import { UserQueries } from '@/services/queries/user'
 import { useUsersFilterStore } from '@/stores/usersFilterStore'

@@ -8,12 +8,12 @@ import {
 } from '@tanstack/react-table'
 import { useCallback, useMemo, useState } from 'react'
 
-import { TableBody } from '@/components/common/TableTemplate/Body'
-import { EmptyState } from '@/components/common/TableTemplate/EmptyState'
-import { TableHeader } from '@/components/common/TableTemplate/Header'
-import { MultipleRowSelectionActionArea } from '@/components/common/TableTemplate/MultipleRowSelectionActionArea'
-import { TablePagination } from '@/components/common/TableTemplate/Pagination'
-import { TableSkeleton } from '@/components/common/TableTemplate/Skeleton'
+import { TableBody } from '@/components/templates/TableTemplate/Body'
+import { EmptyState } from '@/components/templates/TableTemplate/EmptyState'
+import { TableHeader } from '@/components/templates/TableTemplate/Header'
+import { MultipleRowSelectionActionArea } from '@/components/templates/TableTemplate/MultipleRowSelectionActionArea'
+import { TablePagination } from '@/components/templates/TableTemplate/Pagination'
+import { TableSkeleton } from '@/components/templates/TableTemplate/Skeleton'
 import { Table } from '@/components/ui/table'
 
 interface Pagination {

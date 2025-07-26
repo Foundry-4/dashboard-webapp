@@ -10,14 +10,23 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useAuth } from '@/hooks/useAuth'
+import { useModalStore } from '@/stores/useModalStore'
 
 export const SettingsDropdown = () => {
   const { logout } = useAuth()
   const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
+  const { openModal } = useModalStore()
 
   const handleLogout = () => {
-    logout()
+    openModal({
+      title: 'Confirmar saída',
+      message: 'Tem certeza que deseja sair da sua conta?',
+      confirmText: 'Sair',
+      cancelText: 'Cancelar',
+      onConfirm: () => logout(),
+      isDestructive: false
+    })
   }
 
   return (
