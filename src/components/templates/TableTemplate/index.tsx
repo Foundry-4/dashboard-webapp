@@ -8,12 +8,12 @@ import {
 } from '@tanstack/react-table'
 import { useCallback, useMemo, useState } from 'react'
 
-import { TableBody } from '@/components/common/TableTemplate/Body'
-import { EmptyState } from '@/components/common/TableTemplate/EmptyState'
-import { TableHeader } from '@/components/common/TableTemplate/Header'
-import { MultipleRowSelectionActionArea } from '@/components/common/TableTemplate/MultipleRowSelectionActionArea'
-import { TablePagination } from '@/components/common/TableTemplate/Pagination'
-import { TableSkeleton } from '@/components/common/TableTemplate/Skeleton'
+import { TableBody } from '@/components/templates/TableTemplate/Body'
+import { EmptyState } from '@/components/templates/TableTemplate/EmptyState'
+import { TableHeader } from '@/components/templates/TableTemplate/Header'
+import { MultipleRowSelectionActionArea } from '@/components/templates/TableTemplate/MultipleRowSelectionActionArea'
+import { TablePagination } from '@/components/templates/TableTemplate/Pagination'
+import { TableSkeleton } from '@/components/templates/TableTemplate/Skeleton'
 import { Table } from '@/components/ui/table'
 
 interface Pagination {
@@ -37,6 +37,7 @@ interface TableTemplateProps<T> {
   pagination?: Pagination
   getRowId?: (row: T) => string
   onRowSelectionChange?: (rowSelection: string[]) => void
+  onRowClick?: (row: T) => void
 }
 
 export const TableTemplate = <
@@ -50,7 +51,8 @@ export const TableTemplate = <
   rowSelection,
   onRowSelectionChange,
   getRowId,
-  deleted
+  deleted,
+  onRowClick
 }: TableTemplateProps<T>) => {
   const [sorting, setSorting] = useState<SortingState>([])
 
@@ -65,14 +67,14 @@ export const TableTemplate = <
     onPageSizeChange
   } = pagination || {}
 
-  const rowSelectionState = useMemo(() => {
-    return (
+  const rowSelectionState = useMemo(
+    () =>
       rowSelection?.reduce((acc, id) => {
         acc[id] = true
         return acc
-      }, {} as RowSelectionState) || {}
-    )
-  }, [rowSelection])
+      }, {} as RowSelectionState) || {},
+    [rowSelection]
+  )
 
   const selectColumn: ColumnDef<T> = {
     id: 'select',
@@ -139,6 +141,7 @@ export const TableTemplate = <
       <TableBody<T>
         rows={rows}
         fixedRows={fixedRows}
+        onRowClick={onRowClick}
       />
     )
 
@@ -211,8 +214,9 @@ export const TableTemplate = <
     columns.length,
     fixedRows,
     deleted,
-    onPageChange,
     getRowId,
+    onRowClick,
+    onPageChange,
     handlePageSizeChange
   ])
 

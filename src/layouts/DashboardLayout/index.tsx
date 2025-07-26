@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router'
 
+import { WarningModal } from '@/components/common/WarningModal'
 import { DashboardLayoutHeader } from '@/layouts/DashboardLayout/Header'
 import { Sidebar } from '@/layouts/DashboardLayout/Sidebar'
 
@@ -14,6 +15,8 @@ export default function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+
+      <WarningModal />
     </div>
   )
 }

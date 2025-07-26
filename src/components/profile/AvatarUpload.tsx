@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import type { Crop as CropType, PixelCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 
-import { ModalTemplate } from '@/components/common/ModalTemplate'
+import { ModalTemplate } from '@/components/templates/ModalTemplate'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { ProfileMutations } from '@/services/queries/profile'
@@ -236,6 +236,7 @@ export const AvatarUpload = ({
       onOpenChange={open => {
         setIsOpen(open)
       }}
+      confirmText="Salvar"
       isSubmitting={isUploading}
       trigger={
         <Tooltip>
