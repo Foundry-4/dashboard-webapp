@@ -11,7 +11,7 @@ export default function DashboardLayout() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <DashboardLayoutHeader />
-        <main className="w-full flex-1 overflow-x-hidden px-6 py-0 pb-6">
+        <main className="w-full flex-1 overflow-x-hidden p-6">
           <Outlet />
         </main>
       </div>

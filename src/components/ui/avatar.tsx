@@ -48,4 +48,24 @@ function AvatarFallback({
   )
 }
 
-export { Avatar, AvatarFallback, AvatarImage }
+function AvatarWithFallback({
+  className,
+  fallback,
+  src,
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Root> & {
+  fallback: string
+  src: string
+}) {
+  return (
+    <Avatar
+      className={className}
+      {...props}
+    >
+      <AvatarImage src={src} />
+      <AvatarFallback>{fallback}</AvatarFallback>
+    </Avatar>
+  )
+}
+
+export { Avatar, AvatarFallback, AvatarImage, AvatarWithFallback }

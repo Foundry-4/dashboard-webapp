@@ -3,6 +3,7 @@ import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
 import { ProfileRefetchKeys } from '@/domain/constants/profile'
+import { baseURL } from '@/services/api'
 import { deleteAvatar } from '@/services/requests/profile/delete-avatar'
 import { getProfile } from '@/services/requests/profile/get-profile'
 import { update2FA } from '@/services/requests/profile/update-2fa'
@@ -14,7 +15,11 @@ export const useGetProfile = () => {
     queryKey: [ProfileRefetchKeys.PROFILE],
     queryFn: getProfile,
     enabled: !!JSON.parse(localStorage.getItem('na-mesa-ja:user') || 'null')
-      ?.token
+      ?.token,
+    select: data => ({
+      ...data,
+      profilePictureUrl: `${baseURL}${data.profilePictureUrl}`
+    })
   })
 }
 

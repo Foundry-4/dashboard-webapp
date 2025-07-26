@@ -13,7 +13,7 @@ export default function Profile() {
 
         <Link
           to="/profile/change-password"
-          className="flex-1 rounded-xl border bg-white p-6 shadow-sm"
+          className="flex-1 rounded-sm border bg-white p-6 shadow-sm"
         >
           <h3 className="text-lg font-semibold text-gray-900">Alterar senha</h3>
           <p className="mt-2 text-sm text-gray-600">

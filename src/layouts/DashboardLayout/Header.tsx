@@ -9,6 +9,7 @@ import { UserQueries } from '@/services/queries/user'
 export const DashboardLayoutHeader = () => {
   const { currentPage } = useCurrentPage()
   const user = UserQueries.useGetUserById(currentPage, !!Number(currentPage))
+
   const isLoading = user.isLoading
 
   const titleHeader = useMemo(() => {
@@ -17,10 +18,10 @@ export const DashboardLayoutHeader = () => {
     }
 
     return currentPage
-  }, [user.data?.data?.name, currentPage])
+  }, [currentPage, user.data?.data?.name])
 
   return (
-    <header className="flex h-16 items-center justify-between bg-transparent px-6">
+    <header className="flex h-16 items-center justify-between border-b bg-transparent px-6">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="z-10" />
         <h2 className="text-foreground text-lg font-semibold">
