@@ -5,7 +5,7 @@ import { ProfileQueries } from '@/services/queries/profile'
 
 export const ProfileAccountConfigs = () => {
   const userProfile = ProfileQueries.useGetProfile()
-  const is2FAEnabled = userProfile.data?.twoFactorEnabled
+  const is2FAEnabled = userProfile.data?.twoFactorEnabled ?? false
 
   return (
     <Card>

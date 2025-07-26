@@ -1,19 +1,15 @@
 import { AvatarUpload } from '@/components/profile/AvatarUpload'
 import { Card, CardContent } from '@/components/ui/card'
-import { baseURL } from '@/services/api'
 import { ProfileQueries } from '@/services/queries/profile'
 
 export const ProfileMainInfos = () => {
   const userProfile = ProfileQueries.useGetProfile()
-  const profilePictureUrl = userProfile.data?.profilePictureUrl
-    ? `${baseURL}${userProfile.data?.profilePictureUrl}`
-    : undefined
 
   return (
     <Card>
       <CardContent className="flex flex-row items-center gap-4">
         <AvatarUpload
-          currentAvatar={profilePictureUrl}
+          currentAvatar={userProfile.data?.profilePictureUrl}
           userName={userProfile.data?.name}
         />
         <div>
