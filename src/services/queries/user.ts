@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
+import { deleteUser } from '../requests/user/delete-user'
+
 import type { ApiResponseWithPagination } from '@/domain/interfaces/apiResponse'
 import type { GetUsersParams, User } from '@/domain/interfaces/user'
 import type { AxiosError } from 'axios'
@@ -139,6 +141,26 @@ export const useRestoreUserFromTrash = () => {
   })
 }
 
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: deleteUser,
+    onSuccess: response => {
+      toast.success(response.message)
+    },
+    onError: (error: AxiosError) => {
+      toast.error(
+        (error.response?.data as { message?: string })?.message ||
+          'Erro ao deletar usuário'
+      )
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [UserRefetchKeys.USERS] })
+    }
+  })
+}
+
 export const UserQueries = {
   useGetUsers,
   useGetUserById
@@ -147,5 +169,6 @@ export const UserQueries = {
 export const UserMutations = {
   useCreateUser,
   useMoveUserToTrash,
-  useRestoreUserFromTrash
+  useRestoreUserFromTrash,
+  useDeleteUser
 }

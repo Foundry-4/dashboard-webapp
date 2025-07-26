@@ -37,6 +37,7 @@ interface TableTemplateProps<T> {
   pagination?: Pagination
   getRowId?: (row: T) => string
   onRowSelectionChange?: (rowSelection: string[]) => void
+  onRowClick?: (row: T) => void
 }
 
 export const TableTemplate = <
@@ -50,7 +51,8 @@ export const TableTemplate = <
   rowSelection,
   onRowSelectionChange,
   getRowId,
-  deleted
+  deleted,
+  onRowClick
 }: TableTemplateProps<T>) => {
   const [sorting, setSorting] = useState<SortingState>([])
 
@@ -65,14 +67,14 @@ export const TableTemplate = <
     onPageSizeChange
   } = pagination || {}
 
-  const rowSelectionState = useMemo(() => {
-    return (
+  const rowSelectionState = useMemo(
+    () =>
       rowSelection?.reduce((acc, id) => {
         acc[id] = true
         return acc
-      }, {} as RowSelectionState) || {}
-    )
-  }, [rowSelection])
+      }, {} as RowSelectionState) || {},
+    [rowSelection]
+  )
 
   const selectColumn: ColumnDef<T> = {
     id: 'select',
@@ -139,6 +141,7 @@ export const TableTemplate = <
       <TableBody<T>
         rows={rows}
         fixedRows={fixedRows}
+        onRowClick={onRowClick}
       />
     )
 
@@ -211,8 +214,9 @@ export const TableTemplate = <
     columns.length,
     fixedRows,
     deleted,
-    onPageChange,
     getRowId,
+    onRowClick,
+    onPageChange,
     handlePageSizeChange
   ])
 

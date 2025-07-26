@@ -11,6 +11,7 @@ export interface User {
   blocked: boolean
   twoFactorEnabled: boolean
   deleted: boolean
+  profilePictureUrl: string
 }
 
 export interface GetUsersParams extends PaginationParams {

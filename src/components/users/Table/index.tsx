@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import type { User } from '@/domain/interfaces/user'
 
@@ -8,6 +9,7 @@ import { UserQueries } from '@/services/queries/user'
 import { useUsersFilterStore } from '@/stores/usersFilterStore'
 
 export const UsersTable = () => {
+  const navigate = useNavigate()
   const {
     deleted,
     search,
@@ -45,6 +47,13 @@ export const UsersTable = () => {
     setRowSelection(newSelection)
   }, [])
 
+  const handleRowClick = useCallback(
+    (user: User) => {
+      navigate(`/users/edit-user/${user.userId}`)
+    },
+    [navigate]
+  )
+
   const pagination = useMemo(() => {
     return {
       currentPage: page,
@@ -68,6 +77,7 @@ export const UsersTable = () => {
       deleted={deleted}
       rowSelection={rowSelection}
       onRowSelectionChange={handleRowSelectionChange}
+      onRowClick={handleRowClick}
       getRowId={row => row.userId?.toString()}
     />
   )

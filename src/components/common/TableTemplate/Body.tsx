@@ -11,9 +11,14 @@ import { cn } from '@/lib/utils'
 interface TableBodyProps<T> {
   rows: Row<T>[]
   fixedRows?: number
+  onRowClick?: (row: T) => void
 }
 
-export const TableBody = <T,>({ rows, fixedRows }: TableBodyProps<T>) => {
+export const TableBody = <T,>({
+  rows,
+  fixedRows,
+  onRowClick
+}: TableBodyProps<T>) => {
   const emptyRowsCount =
     fixedRows && rows.length < fixedRows ? fixedRows - rows.length : 0
   const cellsPerRow = rows[0]?.getVisibleCells().length ?? 1
@@ -24,14 +29,34 @@ export const TableBody = <T,>({ rows, fixedRows }: TableBodyProps<T>) => {
         <TableRow
           key={row.id}
           data-state={row.getIsSelected() && 'selected'}
-          className={cn('bg-input/10', idx % 2 === 0 && 'bg-white')}
+          className={cn(
+            'bg-input/10',
+            idx % 2 === 0 && 'bg-white',
+            onRowClick && 'hover:bg-muted/50 cursor-pointer'
+          )}
+          onClick={() => {
+            const selection = window.getSelection()
+            if (selection && selection.toString().length > 0) {
+              return
+            }
+            onRowClick?.(row.original)
+          }}
         >
           {row.getVisibleCells().map(cell => {
+            const size = cell.column.getSize()
+            const cellStyle = {
+              width: `${size}px`,
+              minWidth: `${size}px`,
+              maxWidth: `${size}px`
+            }
+
             if (cell.column.id === 'select') {
               return (
                 <TableCell
                   key={cell.id}
-                  className="truncate px-4"
+                  className="px-4"
+                  style={cellStyle}
+                  onClick={e => e.stopPropagation()}
                 >
                   <Checkbox
                     checked={row.getIsSelected()}
@@ -51,10 +76,11 @@ export const TableBody = <T,>({ rows, fixedRows }: TableBodyProps<T>) => {
             return (
               <TableCell
                 key={cell.id}
-                className="truncate px-4"
+                className="px-4"
+                style={cellStyle}
                 title={cellContent as string}
               >
-                {cellContent}
+                <div className="truncate">{cellContent}</div>
               </TableCell>
             )
           })}
@@ -69,14 +95,26 @@ export const TableBody = <T,>({ rows, fixedRows }: TableBodyProps<T>) => {
             (rows.length + idx) % 2 === 0 && 'bg-white'
           )}
         >
-          {Array.from({ length: cellsPerRow }).map((_, cellIdx) => (
-            <TableCell
-              key={`empty-cell-${cellIdx}`}
-              className="truncate px-4"
-            >
-              {/* Empty cell */}
-            </TableCell>
-          ))}
+          {Array.from({ length: cellsPerRow }).map((_, cellIdx) => {
+            // Get the size from the corresponding column in the first row
+            const correspondingCell = rows[0]?.getVisibleCells()[cellIdx]
+            const size = correspondingCell?.column.getSize() ?? 100
+            const cellStyle = {
+              width: `${size}px`,
+              minWidth: `${size}px`,
+              maxWidth: `${size}px`
+            }
+
+            return (
+              <TableCell
+                key={`empty-cell-${cellIdx}`}
+                className="px-4"
+                style={cellStyle}
+              >
+                {/* Empty cell */}
+              </TableCell>
+            )
+          })}
         </TableRow>
       ))}
     </TableBodyUI>

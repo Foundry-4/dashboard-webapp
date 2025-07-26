@@ -1,9 +1,9 @@
-import { ActionButtons } from './ActionButtons'
-
 import type { User } from '@/domain/interfaces/user'
 import type { ColumnDef } from '@tanstack/react-table'
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { baseURL } from '@/services/api'
 import { formatDate } from '@/utils/date'
 
 export const columns: ColumnDef<User>[] = [
@@ -17,7 +17,22 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: 'name',
     header: 'Nome',
     size: 300,
-    enableSorting: true
+    enableSorting: true,
+    cell: ({ row }) => {
+      const value = row.original.name
+      return (
+        <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarImage
+              src={`${baseURL}${row.original.profilePictureUrl}`}
+              className="object-cover"
+            />
+            <AvatarFallback>{value?.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <p className="truncate">{value}</p>
+        </div>
+      )
+    }
   },
   {
     accessorKey: 'email',
@@ -104,22 +119,6 @@ export const columns: ColumnDef<User>[] = [
         <Badge variant={value ? 'destructive' : 'primary'}>
           {value ? 'Sim' : 'Não'}
         </Badge>
-      )
-    }
-  },
-  {
-    accessorKey: 'actions',
-    header: 'Ações',
-    size: 100,
-    enableSorting: false,
-    cell: ({ row }) => {
-      const userId = row.original.userId
-      const isDeleted = row.original.deleted
-      return (
-        <ActionButtons
-          userId={userId}
-          isDeleted={isDeleted}
-        />
       )
     }
   }
