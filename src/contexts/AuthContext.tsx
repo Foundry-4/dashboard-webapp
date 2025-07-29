@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const queryClient = useQueryClient()
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window === 'undefined') return null
-    const user = localStorage.getItem('na-mesa-ja:user')
+    const user = localStorage.getItem('foundry4-admin:user')
     return user ? JSON.parse(user) : null
   })
   const isAuthenticated = !!user?.token
@@ -70,14 +70,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     setUser(response.data)
-    localStorage.setItem('na-mesa-ja:user', JSON.stringify(response.data))
+    localStorage.setItem('foundry4-admin:user', JSON.stringify(response.data))
 
     return response
   }
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem('na-mesa-ja:user')
+    localStorage.removeItem('foundry4-admin:user')
     // Clear the authorization header from axios
     delete api.defaults.headers.common['Authorization']
     // Invalidate all queries to clear cached data
@@ -109,7 +109,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     setUser(userData)
-    localStorage.setItem('na-mesa-ja:user', JSON.stringify(userData))
+    localStorage.setItem('foundry4-admin:user', JSON.stringify(userData))
 
     return response
   }
@@ -150,7 +150,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (typeof window === 'undefined') return
 
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'na-mesa-ja:user') {
+      if (event.key === 'foundry4-admin:user') {
         if (event.newValue === null) {
           setUser(null)
         } else if (event.newValue) {

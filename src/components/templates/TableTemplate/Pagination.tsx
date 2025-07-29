@@ -125,7 +125,7 @@ export const TablePagination = ({
                       onPageChange(page as number)
                     }}
                     isActive={currentPage === page}
-                    className="!border-orange-300 !text-orange-500"
+                    className="!border-blue-300 !text-blue-500"
                   >
                     {page}
                   </PaginationLink>

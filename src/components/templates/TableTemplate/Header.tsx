@@ -30,7 +30,7 @@ export const TableHeader = <T,>({
       {headerGroups.map(headerGroup => (
         <TableRow
           key={headerGroup.id}
-          className="bg-orange-300 hover:bg-orange-300"
+          className="bg-gray-300 hover:bg-gray-300"
         >
           {headerGroup.headers.map(header => {
             const size = header.getSize()

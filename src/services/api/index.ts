@@ -10,7 +10,7 @@ export const api = axios.create({
 api.interceptors.request.use(
   config => {
     // Get token from localStorage
-    const user = localStorage.getItem('na-mesa-ja:user')
+    const user = localStorage.getItem('foundry4-admin:user')
     if (user) {
       try {
         const userData = JSON.parse(user)
@@ -37,7 +37,7 @@ api.interceptors.response.use(
     // If we get a 401 (Unauthorized) response, the token might be expired
     if (error.response?.status === 401) {
       // Clear user data from localStorage
-      localStorage.removeItem('na-mesa-ja:user')
+      localStorage.removeItem('foundry4-admin:user')
 
       // Redirect to login page if we're not already there
       if (window.location.pathname !== '/login') {

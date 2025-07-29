@@ -100,8 +100,9 @@ export default function CreateUser() {
           )}
         />
         <Button
+          className="mt-4 w-full bg-gray-300 text-black hover:bg-gray-400"
           type="submit"
-          className="mt-4 w-full bg-orange-300 text-black hover:bg-orange-400"
+          disabled={createUser.isPending}
         >
           Criar usuário
         </Button>

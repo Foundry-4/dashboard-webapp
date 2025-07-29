@@ -34,11 +34,11 @@ export function Sidebar() {
         >
           <img
             src="/favicon.png"
-            alt="NaMesaJá"
+            alt="Foundry4 Admin"
             className="h-7 !w-7"
           />
-          <h1 className="pointer-events-none w-full bg-gradient-to-r from-orange-600 to-yellow-400 bg-clip-text !text-2xl font-bold text-transparent duration-300 ease-in-out group-data-[collapsible=icon]:w-0">
-            NaMesaJá
+          <h1 className="pointer-events-none w-full bg-gradient-to-r from-gray-600 to-gray-400 bg-clip-text !text-2xl font-bold text-transparent duration-300 ease-in-out group-data-[collapsible=icon]:w-0">
+            Foundry4 Admin
           </h1>
         </div>
       </SidebarHeader>

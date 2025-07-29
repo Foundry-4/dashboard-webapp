@@ -29,7 +29,7 @@ export const AuthFooter = ({
     {!hideSubmitButton && (
       <Button
         type="submit"
-        className="focus-visible:foutline-none h-10 w-full !bg-orange-600 outline-none hover:!border-orange-700 focus:!outline-none"
+        className="focus-visible:foutline-none h-10 w-full !bg-gray-600 outline-none hover:!border-gray-700 focus:!outline-none"
         onClick={onSubmit}
         disabled={disabled || isButtonDisabled}
       >
@@ -41,7 +41,7 @@ export const AuthFooter = ({
       {question}
       <Link
         to={linkTo}
-        className="ml-1 text-sm !text-orange-600"
+        className="ml-1 text-sm !text-blue-600"
       >
         {linkText}
       </Link>

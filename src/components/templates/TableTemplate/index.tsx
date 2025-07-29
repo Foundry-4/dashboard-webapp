@@ -40,9 +40,7 @@ interface TableTemplateProps<T> {
   onRowClick?: (row: T) => void
 }
 
-export const TableTemplate = <
-  T extends { userId?: string | number; id?: string | number }
->({
+export const TableTemplate = <T,>({
   data,
   columns,
   isLoading,

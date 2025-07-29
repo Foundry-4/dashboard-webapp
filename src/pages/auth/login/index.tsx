@@ -85,7 +85,7 @@ export default function Login() {
 
           <Link
             to="/forgot-password"
-            className="ml-auto text-sm !text-orange-600"
+            className="ml-auto text-sm !text-blue-600"
           >
             Esqueci minha senha
           </Link>
