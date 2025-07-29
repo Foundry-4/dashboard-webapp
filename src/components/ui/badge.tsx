@@ -10,16 +10,17 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          'border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90',
+          'inline-flex items-center rounded-md border border-transparent bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
         secondary:
-          'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
+          'inline-flex items-center rounded-md border border-transparent bg-secondary px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
         destructive:
-          'border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
-        outline:
-          'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
+          'inline-flex items-center rounded-md border border-transparent bg-destructive px-2.5 py-0.5 text-xs font-semibold text-destructive-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+        outline: 'text-foreground',
         primary:
-          'border-transparent bg-orange-300 text-black [a&]:hover:bg-orange-400',
-        gray: 'border-transparent bg-gray-300 text-black [a&]:hover:bg-gray-400'
+          'border-transparent bg-gray-300 text-black [a&]:hover:bg-gray-400',
+        gray: 'border-transparent bg-gray-300 text-black [a&]:hover:bg-gray-400',
+        restore:
+          'border-transparent bg-green-300 text-black [a&]:hover:bg-green-400'
       }
     },
     defaultVariants: {

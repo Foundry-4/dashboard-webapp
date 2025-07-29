@@ -14,7 +14,7 @@ export const useGetProfile = () => {
   return useQuery({
     queryKey: [ProfileRefetchKeys.PROFILE],
     queryFn: getProfile,
-    enabled: !!JSON.parse(localStorage.getItem('na-mesa-ja:user') || 'null')
+    enabled: !!JSON.parse(localStorage.getItem('foundry4-admin:user') || 'null')
       ?.token,
     select: data => ({
       ...data,

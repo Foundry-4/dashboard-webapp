@@ -18,6 +18,8 @@ import NotFound from '@/pages/NotFound'
 const ProfileRoutes = lazy(() => import('./profileRoutes'))
 const UserRoutes = lazy(() => import('./userRoutes'))
 const RolesRoutes = lazy(() => import('./rolesRoutes'))
+const CompaniesRoutes = lazy(() => import('./companiesRoutes'))
+const ServicesRoutes = lazy(() => import('./servicesRoutes'))
 
 export const AppRoutes = () => {
   return (
@@ -106,6 +108,22 @@ export const AppRoutes = () => {
             element={
               <Suspense fallback={<LoadingSpinner />}>
                 <RolesRoutes />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/companies/*"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <CompaniesRoutes />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/services/*"
+            element={
+              <Suspense fallback={<LoadingSpinner />}>
+                <ServicesRoutes />
               </Suspense>
             }
           />

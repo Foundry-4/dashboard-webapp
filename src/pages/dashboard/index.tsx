@@ -10,7 +10,7 @@ export default function Dashboard() {
           Bem-vindo, {user?.name}!
         </h2>
         <p className="mt-2 text-gray-600">
-          Este é o seu painel de controle do NaMesaJá.
+          Este é o seu painel de controle do Foundry4 Admin.
         </p>
       </div>
 

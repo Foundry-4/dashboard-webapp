@@ -45,15 +45,15 @@ export const SidebarItem = ({
   return (
     <SidebarMenuItem
       className={cn(
-        'rounded-xs duration-300 ease-in-out hover:bg-orange-300',
-        isActive && 'bg-orange-300'
+        'rounded-xs duration-300 ease-in-out hover:bg-gray-300',
+        isActive && 'bg-gray-300'
       )}
       onClick={handleNavigate}
     >
       <SidebarMenuButton
         className={cn(
           'rounded-xs px-4 py-5 duration-300 ease-in-out',
-          isActive && 'bg-orange-300'
+          isActive && 'bg-gray-300'
         )}
       >
         <Icon className={iconClassName} />

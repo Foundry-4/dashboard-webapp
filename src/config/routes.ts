@@ -1,9 +1,8 @@
 import {
-  BarChart3,
+  Building2,
   FileText,
   FolderKey,
   LayoutDashboard,
-  Settings,
   Users
 } from 'lucide-react'
 
@@ -24,50 +23,50 @@ export interface SidebarGroup {
   routes: RouteConfig[]
 }
 
-export const ROUTES: Record<string, RouteConfig> = {
-  // Auth routes
+const AUTH_ROUTES: Record<string, RouteConfig> = {
   login: {
     path: '/login',
     title: 'Entrar',
-    routeTitle: 'Entrar | NaMesaJá',
+    routeTitle: 'Entrar | Foundry4 Admin',
     isPrivate: false
   },
   register: {
     path: '/register',
     title: 'Cadastrar',
-    routeTitle: 'Cadastrar | NaMesaJá',
+    routeTitle: 'Cadastrar | Foundry4 Admin',
     isPrivate: false
   },
   forgotPassword: {
     path: '/forgot-password',
     title: 'Esqueci minha senha',
-    routeTitle: 'Esqueci minha senha | NaMesaJá',
+    routeTitle: 'Esqueci minha senha | Foundry4 Admin',
     isPrivate: false
   },
   resetPassword: {
     path: '/reset-password',
     title: 'Redefinir Senha',
-    routeTitle: 'Redefinir Senha | NaMesaJá',
+    routeTitle: 'Redefinir Senha | Foundry4 Admin',
     isPrivate: false
   },
   confirmAccount: {
     path: '/confirm-account',
     title: 'Confirmar Conta',
-    routeTitle: 'Confirmar Conta | NaMesaJá',
+    routeTitle: 'Confirmar Conta | Foundry4 Admin',
     isPrivate: false
   },
   verify2FA: {
     path: '/verify-2fa',
     title: 'Verificação de dois fatores',
-    routeTitle: 'Verificação de dois fatores | NaMesaJá',
+    routeTitle: 'Verificação de dois fatores | Foundry4 Admin',
     isPrivate: false
-  },
+  }
+}
 
-  // Dashboard routes
+const DASHBOARD_ROUTES: Record<string, RouteConfig> = {
   dashboard: {
     path: '/',
     title: 'Início',
-    routeTitle: 'Início | NaMesaJá',
+    routeTitle: 'Início | Foundry4 Admin',
     icon: LayoutDashboard,
     label: 'Início',
     isPrivate: true
@@ -75,13 +74,13 @@ export const ROUTES: Record<string, RouteConfig> = {
   profile: {
     path: '/profile',
     title: 'Perfil',
-    routeTitle: 'Perfil | NaMesaJá',
+    routeTitle: 'Perfil | Foundry4 Admin',
     isPrivate: true
   },
   users: {
     path: '/users',
     title: 'Usuários',
-    routeTitle: 'Usuários | NaMesaJá',
+    routeTitle: 'Usuários | Foundry4 Admin',
     icon: Users,
     label: 'Usuários',
     isPrivate: true,
@@ -90,52 +89,47 @@ export const ROUTES: Record<string, RouteConfig> = {
   createUser: {
     path: '/users/create-user',
     title: 'Criar usuário',
-    routeTitle: 'Criar usuário | NaMesaJá',
+    routeTitle: 'Criar usuário | Foundry4 Admin',
     isPrivate: true,
     isAdminOnly: true
   },
   editUser: {
     path: '/users/edit-user/:userId',
     title: 'Editar usuário',
-    routeTitle: 'Editar usuário | NaMesaJá',
+    routeTitle: 'Editar usuário | Foundry4 Admin',
     isPrivate: true,
     isAdminOnly: true
   },
   roles: {
     path: '/roles',
     title: 'Permissões',
-    routeTitle: 'Permissões | NaMesaJá',
+    routeTitle: 'Permissões | Foundry4 Admin',
     icon: FolderKey,
     label: 'Permissões',
     isPrivate: true,
     isAdminOnly: true
   },
-
-  // Static examples just to fill space
-  reports: {
-    path: '/reports',
-    title: 'Relatórios',
-    routeTitle: 'Relatórios | NaMesaJá',
-    icon: BarChart3,
-    label: 'Relatórios',
+  companies: {
+    path: '/companies',
+    title: 'Empresas',
+    routeTitle: 'Empresas | Foundry4 Admin',
+    icon: Building2,
+    label: 'Empresas',
     isPrivate: true
   },
-  documents: {
-    path: '/documents',
-    title: 'Documentos',
-    routeTitle: 'Documentos | NaMesaJá',
+  services: {
+    path: '/services',
+    title: 'Serviços',
+    routeTitle: 'Serviços | Foundry4 Admin',
     icon: FileText,
-    label: 'Documentos',
-    isPrivate: true
-  },
-  settings: {
-    path: '/settings',
-    title: 'Configurações',
-    routeTitle: 'Configurações | NaMesaJá',
-    icon: Settings,
-    label: 'Configurações',
+    label: 'Serviços',
     isPrivate: true
   }
+}
+
+export const ROUTES: Record<string, RouteConfig> = {
+  ...AUTH_ROUTES,
+  ...DASHBOARD_ROUTES
 }
 
 export const SIDEBAR_GROUPS: SidebarGroup[] = [
@@ -144,16 +138,12 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
     routes: [ROUTES.dashboard]
   },
   {
-    label: 'CONTEÚDO',
-    routes: [ROUTES.reports, ROUTES.documents]
+    label: 'GESTÃO DE CLIENTES',
+    routes: [ROUTES.companies, ROUTES.services]
   },
   {
     label: 'ADMINISTRAÇÃO',
     routes: [ROUTES.users, ROUTES.roles]
-  },
-  {
-    label: 'SISTEMA',
-    routes: [ROUTES.settings]
   }
 ]
 

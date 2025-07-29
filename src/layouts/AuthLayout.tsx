@@ -30,12 +30,12 @@ export default function AuthLayout() {
         )}
       >
         <header className="flex w-full items-center justify-between px-6 sm:px-0">
-          <h2 className="w-full bg-gradient-to-r from-orange-600 to-yellow-400 bg-clip-text text-left text-3xl font-bold text-transparent">
-            NaMesaJá
+          <h2 className="w-full bg-gradient-to-r from-gray-600 to-gray-400 bg-clip-text text-left text-3xl font-bold text-transparent">
+            Foundry4 Admin
           </h2>
           <img
             src="/favicon.png"
-            alt="NaMesaJá"
+            alt="Foundry4 Admin"
             className="h-10 w-10"
           />
         </header>

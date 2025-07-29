@@ -13,7 +13,7 @@ export default function Roles() {
       <div className="flex items-center justify-between gap-4">
         <RolesFilters />
         <Button
-          className="self-end bg-orange-300 text-black hover:bg-orange-400"
+          className="self-end bg-gray-300 text-black hover:bg-gray-400"
           size="sm"
           onClick={() => {
             navigate('/users/create-user')
