@@ -4,11 +4,11 @@ import { useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch'
-import { useUsersFilterStore } from '@/stores/usersFilterStore'
+import { useCompaniesFilterStore } from '@/stores/companiesFilterStore'
 
-export const UsersFilters = () => {
+export const CompaniesFilters = () => {
   const { deleted, search, setDeleted, setSearch, reset } =
-    useUsersFilterStore()
+    useCompaniesFilterStore()
 
   const {
     searchInput,
@@ -16,7 +16,6 @@ export const UsersFilters = () => {
     reset: resetSearch
   } = useDebouncedSearch({
     initialValue: search,
-    delay: 500,
     onSearch: setSearch
   })
 
@@ -29,7 +28,7 @@ export const UsersFilters = () => {
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
       <div className="flex flex-1 items-center gap-2">
         <Input
-          placeholder="Buscar usuário..."
+          placeholder="Buscar empresa..."
           value={searchInput}
           onChange={handleSearchChange}
           className="h-8 max-w-[220px]"

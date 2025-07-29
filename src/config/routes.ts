@@ -124,6 +124,12 @@ const DASHBOARD_ROUTES: Record<string, RouteConfig> = {
     icon: FileText,
     label: 'Serviços',
     isPrivate: true
+  },
+  createCompany: {
+    path: '/companies/create-company',
+    title: 'Criar empresa',
+    routeTitle: 'Criar empresa | Foundry4 Admin',
+    isPrivate: true
   }
 }
 
